@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LIFF Example</title>
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script>
+      function initializeLiff(myLiffId) {
+        liff.init({ liffId: myLiffId }).then(() => {
+          if (!liff.isLoggedIn()) {
+            liff.login();
+          } else {
+            liff.getProfile().then(profile => {
+              const userId = profile.userId;
+              document.getElementById("userId").textContent = "User ID: " + userId;
+            }).catch(err => {
+              console.error("Error getting profile: " + err);
+            });
+          }
+        }).catch(err => {
+          console.error("Error initializing LIFF: " + err);
+        });
+      }
+
+      window.onload = function() {
+        const liffId = '<?= LIFF_ID ?>'; // 替換為你自己的 LIFF ID
+        initializeLiff(liffId);
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Line User ID</h1>
+    <p id="userId">Loading...</p>
+  </body>
+</html>
