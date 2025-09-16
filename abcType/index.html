@@ -1,0 +1,313 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Practice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        #keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background-color: #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .row {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        .key {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #999;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+        .key.highlight {
+            animation: blink 0.5s infinite;
+        }
+        .key.correct {
+            background-color: #00ff00 !important;
+            animation: none;
+        }
+        .key.incorrect {
+            background-color: #ff0000 !important;
+            animation: none;
+        }
+        @keyframes blink {
+            0% { background-color: inherit; }
+            50% { background-color: #ff8c00; }
+            100% { background-color: inherit; }
+        }
+        .finger-indicator {
+            position: absolute;
+            bottom: 5px;
+            font-size: 12px;
+            color: #d00;
+        }
+        #target-letter {
+            font-size: 48px;
+            margin: 20px 0;
+            color: #333;
+        }
+        #menu {
+            margin-bottom: 20px;
+        }
+        #menu select {
+            padding: 5px;
+            font-size: 16px;
+        }
+        #hands {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .hand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .finger-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+        }
+        .finger {
+            width: 40px;
+            height: 60px;
+            border: 1px solid #999;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .finger.highlight {
+            background-color: #ff8c00 !important;
+        }
+        /* Finger-specific colors */
+        .left-pinky { background-color: #ffcccb; }
+        .left-ring { background-color: #add8e6; }
+        .left-middle { background-color: #90ee90; }
+        .left-index { background-color: #f0e68c; }
+        .right-index { background-color: #ffb6c1; }
+        .right-middle { background-color: #90ee90; }
+        .right-ring { background-color: #add8e6; }
+        .right-pinky { background-color: #ffcccb; }
+        /* Positioning fingers under specific keys */
+        #left-hand .finger-row {
+            justify-content: flex-start;
+            padding-left: 70px; /* Shifted right by ~2 keys (50px key + 5px gap = 55px, adjusted to 70px for alignment under X) */
+        }
+        #right-hand .finger-row {
+            justify-content: flex-end;
+            padding-right: 70px; /* Aligns right index under N */
+        }
+    </style>
+</head>
+<body>
+    <h1>鍵盤指法練習</h1>
+    <h3>請先設定成英文模式，大寫狀態！</h3>
+    <div id="menu">
+        <label for="row-select">練習行: </label>
+        <select id="row-select" onchange="changeRow()">
+            <option value="all">全部</option>
+            <option value="q">Q 行</option>
+            <option value="a">A 行</option>
+            <option value="z">Z 行</option>
+        </select>
+    </div>
+    <div id="target-letter"></div>
+    <div id="keyboard"></div>
+    <div id="hands">
+        <div class="hand" id="left-hand">
+            <div class="finger-row">
+                <div class="finger left-pinky" data-finger="left pinky">1小指<br>Q A Z</div>
+                <div class="finger left-ring" data-finger="left ring">2無名指<br>W S X</div>
+                <div class="finger left-middle" data-finger="left middle">3中指<br>E D C</div>
+                <div class="finger left-index" data-finger="left index">4食指<br>R T F G V B</div>
+            </div>
+        </div>
+        <div class="hand" id="right-hand">
+            <div class="finger-row">
+                <div class="finger right-index" data-finger="right index">7食指<br>Y U H J N M</div>
+                <div class="finger right-middle" data-finger="right middle">9中指<br>I K</div>
+                <div class="finger right-ring" data-finger="right ring">9無名指<br>O L</div>
+                <div class="finger right-pinky" data-finger="right pinky">0小指<br>P</div>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <h3>指法圖示</h3>
+        <img src="finger.jpg" alt="鍵盤指法圖" width="300">
+    </div>
+    <script>
+        const keyboardLayout = {
+            n:['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+            q: ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+            a: ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';'],
+            z: ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/']
+        };
+
+        const fingerMap = {
+            '1': 'left pinky','Q': 'left pinky', 'A': 'left pinky', 'Z': 'left pinky',
+            '2': 'left ring','W': 'left ring', 'S': 'left ring', 'X': 'left ring',
+            '3': 'left middle','E': 'left middle', 'D': 'left middle', 'C': 'left middle',
+            '4': 'left index','R': 'left index', 'F': 'left index', 'V': 'left index',
+            '5': 'left index','T': 'left index', 'G': 'left index', 'B': 'left index',
+            '6': 'right index','Y': 'right index', 'H': 'right index', 'N': 'right index',
+            '7': 'right index','U': 'right index', 'J': 'right index', 'M': 'right index',
+            '8': 'right middle','I': 'right middle', 'K': 'right middle',',': 'right middle',
+            '9': 'right ring','O': 'right ring', 'L': 'right ring','.': 'right ring',
+            '0': 'right pinky','P': 'right pinky', ';': 'right pinky','/': 'right pinky'
+        };
+
+        let currentRow = 'all';
+        let currentLetter = '';
+        let availableLetters = [];
+        let isProcessing = false;
+
+        function generateKeyboard() {
+            const keyboardDiv = document.getElementById('keyboard');
+            keyboardDiv.innerHTML = '';
+            const rows = currentRow === 'all' ? ['n','q', 'a', 'z'] : [currentRow];
+            rows.forEach(row => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                keyboardLayout[row].forEach(letter => {
+                    const keyDiv = document.createElement('div');
+                    keyDiv.className = `key ${fingerMap[letter].replace(/\s+/g, '-')}`;
+                    keyDiv.dataset.letter = letter;
+                    keyDiv.innerText = letter;
+                    const finger = document.createElement('span');
+                    finger.className = 'finger-indicator';
+                    finger.innerText =  '';
+                    keyDiv.appendChild(finger);
+                    rowDiv.appendChild(keyDiv);
+                });
+                keyboardDiv.appendChild(rowDiv);
+            });
+        }
+
+        function updateAvailableLetters() {
+            availableLetters = [];
+            if (currentRow === 'all') {
+                availableLetters = [...keyboardLayout.q, ...keyboardLayout.a, ...keyboardLayout.z];
+            } else {
+                availableLetters = [...keyboardLayout[currentRow]];
+            }
+        }
+
+        function setNewLetter() {
+            if (availableLetters.length === 0) return;
+            currentLetter = availableLetters[Math.floor(Math.random() * availableLetters.length)];
+            document.getElementById('target-letter').innerText = currentLetter;
+            document.querySelectorAll('.key').forEach(key => {
+                key.classList.toggle('highlight', key.dataset.letter === currentLetter);
+                key.classList.remove('correct', 'incorrect');
+            });
+            document.querySelectorAll('.finger').forEach(finger => {
+                finger.classList.toggle('highlight', finger.dataset.finger === fingerMap[currentLetter]);
+            });
+        }
+
+        function changeRow() {
+            currentRow = document.getElementById('row-select').value;
+            generateKeyboard();
+            updateAvailableLetters();
+            setNewLetter();
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (isProcessing) return;
+            isProcessing = true;
+
+            const pressedKey = event.key.toUpperCase();
+            const targetKey = document.querySelector(`.key[data-letter="${currentLetter}"]`);
+            
+            if (pressedKey === currentLetter) {
+                targetKey.classList.add('correct');
+            } else {
+                targetKey.classList.add('incorrect');
+            }
+
+            setTimeout(() => {
+                targetKey.classList.remove('correct', 'incorrect');
+                if (pressedKey === currentLetter) {
+                    setNewLetter();
+                }
+                isProcessing = false;
+            }, 300);
+        });
+
+        // Initialize
+        generateKeyboard();
+        updateAvailableLetters();
+        setNewLetter();
+    </script>
+</body>
+</html>
