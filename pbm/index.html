@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注音符號鍵盤指法練習</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+            color: #334155;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 90%;
+            width: 1000px;
+            background-color: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .key {
+            width: 50px;
+            height: 50px;
+            background-color: #e2e8f0;
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+            position: relative;
+            user-select: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+        }
+        .key:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .key-lg { width: 65px; }
+        .key-xl { width: 80px; }
+        .key-xxl { width: 100px; }
+        .key-space { width: 300px; }
+        .zhuyin { font-size: 1.25rem; font-weight: 700; color: #475569; }
+        .english { font-size: 0.75rem; color: #94a3b8; }
+
+        /* Finger guide styles */
+        .finger-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .finger {
+            width: 30px;
+            height: 50px;
+            background-color: #cbd5e1;
+            border-radius: 0.5rem;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 0.5rem;
+            font-size: 0.75rem;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* Color-based highlighting */
+        .highlight-green {
+            background-color: #6ee7b7;
+            animation: pulse 1.5s infinite;
+        }
+        .highlight-yellow {
+            background-color: #fcd34d;
+            animation: pulse 1.5s infinite;
+        }
+        .highlight-purple {
+            background-color: #d8b4fe;
+            animation: pulse 1.5s infinite;
+        }
+        .highlight-blue {
+            background-color: #60a5fa;
+            animation: pulse 1.5s infinite;
+        }
+        .highlight-red {
+            background-color: #f87171;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* 手指對應鍵盤位置的顏色標記 */
+        .left-pinky-key { border-left: 4px solid #6ee7b7; }
+        .left-ring-key { border-left: 4px solid #fcd34d; }
+        .left-middle-key { border-left: 4px solid #d8b4fe; }
+        .left-index-key { border-left: 4px solid #60a5fa; }
+        .right-index-key { border-right: 4px solid #f87171; }
+        .right-middle-key { border-right: 4px solid #d8b4fe; }
+        .right-ring-key { border-right: 4px solid #fcd34d; }
+        .right-pinky-key { border-right: 4px solid #6ee7b7; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex justify-center items-center min-h-screen">
+
+<div class="container">
+    <h1 class="text-3xl font-bold mb-4">注音符號鍵盤指法練習</h1>
+
+    <div class="bg-gray-200 p-8 rounded-xl shadow-inner text-center w-full">
+        <div id="challenge" class="text-8xl font-bold text-gray-700 mb-4 h-24">？</div>
+        <div id="message" class="text-xl h-8 text-gray-600">按下「開始練習」來開始！</div>
+    </div>
+
+    <!-- Keyboard Layout -->
+    <div class="flex flex-col gap-2 p-4 bg-gray-100 rounded-xl shadow-md">
+        <!-- Row 1 (Numbers) -->
+        <div class="flex gap-2 justify-center">
+            <div id="key-1" class="key highlight-green"><span class="zhuyin">ㄅ</span><span class="english">1</span></div>
+            <div id="key-2" class="key highlight-yellow"><span class="zhuyin">ㄉ</span><span class="english">2</span></div>
+            <div id="key-3" class="key highlight-purple"><span class="zhuyin">ˇ</span><span class="english">3</span></div>
+            <div id="key-4" class="key highlight-blue"><span class="zhuyin">ˋ</span><span class="english">4</span></div>
+            <div id="key-5" class="key highlight-blue"><span class="zhuyin">ㄓ</span><span class="english">5</span></div>
+            <div id="key-6" class="key highlight-red"><span class="zhuyin">ˊ</span><span class="english">6</span></div>
+            <div id="key-7" class="key highlight-red"><span class="zhuyin">˙</span><span class="english">7</span></div>
+            <div id="key-8" class="key highlight-purple"><span class="zhuyin">ㄚ</span><span class="english">8</span></div>
+            <div id="key-9" class="key highlight-yellow"><span class="zhuyin">ㄞ</span><span class="english">9</span></div>
+            <div id="key-0" class="key highlight-green"><span class="zhuyin">ㄢ</span><span class="english">0</span></div>
+            <div id="key--" class="key"><span class="zhuyin">ㄦ</span><span class="english">-</span></div>
+            <div id="key-equal" class="key"><span class="zhuyin"></span><span class="english">=</span></div>
+            <div id="key-backspace" class="key key-lg"><span class="text-sm">←</span></div>
+        </div>
+        <!-- Row 2 (QWERTY) -->
+        <div class="flex gap-2 justify-center">
+            <div id="key-tab" class="key key-xl"><span class="english">Tab</span></div>
+            <div id="key-q" class="key highlight-green"><span class="zhuyin">ㄆ</span><span class="english">Q</span></div>
+            <div id="key-w" class="key highlight-yellow"><span class="zhuyin">ㄊ</span><span class="english">W</span></div>
+            <div id="key-e" class="key highlight-purple"><span class="zhuyin">ㄍ</span><span class="english">E</span></div>
+            <div id="key-r" class="key highlight-blue"><span class="zhuyin">ㄐ</span><span class="english">R</span></div>
+            <div id="key-t" class="key highlight-blue"><span class="zhuyin">ㄔ</span><span class="english">T</span></div>
+            <div id="key-y" class="key highlight-red"><span class="zhuyin">ㄗ</span><span class="english">Y</span></div>
+            <div id="key-u" class="key highlight-red"><span class="zhuyin">ㄧ</span><span class="english">U</span></div>
+            <div id="key-i" class="key highlight-purple"><span class="zhuyin">ㄛ</span><span class="english">I</span></div>
+            <div id="key-o" class="key highlight-yellow"><span class="zhuyin">ㄟ</span><span class="english">O</span></div>
+            <div id="key-p" class="key highlight-green"><span class="zhuyin">ㄣ</span><span class="english">P</span></div>
+            <div id="key-open-bracket" class="key"><span class="english">[</span></div>
+            <div id="key-close-bracket" class="key"><span class="zhuyin"></span><span class="english">]</span></div>
+            <div id="key-backslash" class="key key-lg"><span class="english">\</span></div>
+        </div>
+        <!-- Row 3 (ASDF) -->
+        <div class="flex gap-2 justify-center">
+            <div id="key-capslock" class="key key-xl"><span class="english">Caps</span></div>
+            <div id="key-a" class="key highlight-green"><span class="zhuyin">ㄇ</span><span class="english">A</span></div>
+            <div id="key-s" class="key highlight-yellow"><span class="zhuyin">ㄋ</span><span class="english">S</span></div>
+            <div id="key-d" class="key highlight-purple"><span class="zhuyin">ㄎ</span><span class="english">D</span></div>
+            <div id="key-f" class="key highlight-blue"><span class="zhuyin">ㄑ</span><span class="english">F</span></div>
+            <div id="key-g" class="key highlight-blue"><span class="zhuyin">ㄕ</span><span class="english">G</span></div>
+            <div id="key-h" class="key highlight-red"><span class="zhuyin">ㄘ</span><span class="english">H</span></div>
+            <div id="key-j" class="key highlight-red"><span class="zhuyin">ㄨ</span><span class="english">J</span></div>
+            <div id="key-k" class="key highlight-purple"><span class="zhuyin">ㄜ</span><span class="english">K</span></div>
+            <div id="key-l" class="key highlight-yellow"><span class="zhuyin">ㄠ</span><span class="english">L</span></div>
+            <div id="key-semicolon" class="key highlight-green"><span class="zhuyin">ㄤ</span><span class="english">;</span></div>
+            <div id="key-quote" class="key"><span class="english">'</span></div>
+            <div id="key-enter" class="key key-xxl"><span class="english">Enter</span></div>
+        </div>
+        <!-- Row 4 (ZXCV) -->
+        <div class="flex gap-2 justify-center">
+            <div id="key-shift-l" class="key key-xxl"><span class="english">Shift</span></div>
+            <div id="key-z" class="key highlight-green"><span class="zhuyin">ㄈ</span><span class="english">Z</span></div>
+            <div id="key-x" class="key highlight-yellow"><span class="zhuyin">ㄌ</span><span class="english">X</span></div>
+            <div id="key-c" class="key highlight-purple"><span class="zhuyin">ㄏ</span><span class="english">C</span></div>
+            <div id="key-v" class="key highlight-blue"><span class="zhuyin">ㄒ</span><span class="english">V</span></div>
+            <div id="key-b" class="key highlight-blue"><span class="zhuyin">ㄖ</span><span class="english">B</span></div>
+            <div id="key-n" class="key highlight-red"><span class="zhuyin">ㄙ</span><span class="english">N</span></div>
+            <div id="key-m" class="key highlight-red"><span class="zhuyin">ㄩ</span><span class="english">M</span></div>
+            <div id="key-comma" class="key highlight-purple"><span class="zhuyin">ㄝ</span><span class="english">,</span></div>
+            <div id="key-period" class="key highlight-yellow"><span class="zhuyin">ㄡ</span><span class="english">.</span></div>
+            <div id="key-slash" class="key highlight-green"><span class="zhuyin">ㄥ</span><span class="english">/</span></div>
+            <div id="key-shift-r" class="key key-xxl"><span class="english">Shift</span></div>
+        </div>
+        <!-- Row 5 (Bottom) -->
+        <div class="flex gap-2 justify-center">
+            <div id="key-ctrl-l" class="key key-xl"><span class="english">Ctrl</span></div>
+            <div id="key-fn-l" class="key key-xl"><span class="english">Fn</span></div>
+            <div id="key-alt-l" class="key key-xl"><span class="english">Alt</span></div>
+            <div id="key-space" class="key key-space"><span class="zhuyin"> </span></div>
+            <div id="key-alt-r" class="key key-xl"><span class="english">Alt</span></div>
+            <div id="key-ctrl-r" class="key key-xl"><span class="english">Ctrl</span></div>
+        </div>
+    </div>
+
+    <!-- Finger Guide -->
+    <div class="flex justify-center items-center gap-6 mt-4">
+        <span class="text-lg font-bold">左手</span>
+        <div class="flex gap-2">
+            <div id="finger-left-pinky" class="finger highlight-green"></div>
+            <div id="finger-left-ring" class="finger highlight-yellow"></div>
+            <div id="finger-left-middle" class="finger highlight-purple"></div>
+            <div id="finger-left-index" class="finger highlight-blue"></div>
+        </div>
+        <div class="flex gap-2">
+            <div id="finger-right-index" class="finger highlight-red"></div>
+            <div id="finger-right-middle" class="finger highlight-purple"></div>
+            <div id="finger-right-ring" class="finger highlight-yellow"></div>
+            <div id="finger-right-pinky" class="finger highlight-green"></div>
+        </div>
+        <span class="text-lg font-bold">右手</span>
+    </div>
+
+    <button id="startButton" class="mt-8 px-8 py-3 bg-blue-500 text-white font-bold rounded-full shadow-lg hover:bg-blue-600 transition-colors">開始練習</button>
+</div>
+
+<script>
+    // Define the key-to-zhuyin and key-to-finger mappings (標準式/大千注音符號順序)
+    const keyMap = {
+        '1': { zhuyin: 'ㄅ', finger: 'left-pinky', color: 'highlight-green' },
+        '2': { zhuyin: 'ㄉ', finger: 'left-ring', color: 'highlight-yellow' },
+        '3': { zhuyin: 'ˇ', finger: 'left-middle', color: 'highlight-purple' },
+        '4': { zhuyin: 'ˋ', finger: 'left-index', color: 'highlight-blue' },
+        '5': { zhuyin: 'ㄓ', finger: 'left-index', color: 'highlight-blue' },
+        '6': { zhuyin: 'ˊ', finger: 'right-index', color: 'highlight-red' },
+        '7': { zhuyin: '˙', finger: 'right-index', color: 'highlight-red' },
+        '8': { zhuyin: 'ㄚ', finger: 'right-middle', color: 'highlight-purple' },
+        '9': { zhuyin: 'ㄞ', finger: 'right-ring', color: 'highlight-yellow' },
+        '0': { zhuyin: 'ㄢ', finger: 'right-pinky', color: 'highlight-green' },
+        '-': { zhuyin: 'ㄦ', finger: 'right-pinky', color: 'highlight-green' },
+        // '=' is not a standard zhuyin key
+        'q': { zhuyin: 'ㄆ', finger: 'left-pinky', color: 'highlight-green' },
+        'w': { zhuyin: 'ㄊ', finger: 'left-ring', color: 'highlight-yellow' },
+        'e': { zhuyin: 'ㄍ', finger: 'left-middle', color: 'highlight-purple' },
+        'r': { zhuyin: 'ㄐ', finger: 'left-index', color: 'highlight-blue' },
+        't': { zhuyin: 'ㄔ', finger: 'left-index', color: 'highlight-blue' },
+        'y': { zhuyin: 'ㄗ', finger: 'right-index', color: 'highlight-red' },
+        'u': { zhuyin: 'ㄧ', finger: 'right-index', color: 'highlight-red' },
+        'i': { zhuyin: 'ㄛ', finger: 'right-middle', color: 'highlight-purple' },
+        'o': { zhuyin: 'ㄟ', finger: 'right-ring', color: 'highlight-yellow' },
+        'p': { zhuyin: 'ㄣ', finger: 'right-pinky', color: 'highlight-green' },
+        //'[': { zhuyin: 'ㄤ', finger: 'right-pinky', color: 'highlight-green' },
+        // ']' is not a standard zhuyin key
+        'a': { zhuyin: 'ㄇ', finger: 'left-pinky', color: 'highlight-green' },
+        's': { zhuyin: 'ㄋ', finger: 'left-ring', color: 'highlight-yellow' },
+        'd': { zhuyin: 'ㄎ', finger: 'left-middle', color: 'highlight-purple' },
+        'f': { zhuyin: 'ㄑ', finger: 'left-index', color: 'highlight-blue' },
+        'g': { zhuyin: 'ㄕ', finger: 'left-index', color: 'highlight-blue' },
+        'h': { zhuyin: 'ㄘ', finger: 'right-index', color: 'highlight-red' },
+        'j': { zhuyin: 'ㄨ', finger: 'right-index', color: 'highlight-red' },
+        'k': { zhuyin: 'ㄜ', finger: 'right-middle', color: 'highlight-purple' },
+        'l': { zhuyin: 'ㄠ', finger: 'right-ring', color: 'highlight-yellow' },
+        ';': { zhuyin: 'ㄤ', finger: 'right-pinky', color: 'highlight-green' },
+        //\'': { zhuyin: 'ㄥ', finger: 'right-pinky', color: 'highlight-green' },
+        'z': { zhuyin: 'ㄈ', finger: 'left-pinky', color: 'highlight-green' },
+        'x': { zhuyin: 'ㄌ', finger: 'left-ring', color: 'highlight-yellow' },
+        'c': { zhuyin: 'ㄏ', finger: 'left-middle', color: 'highlight-purple' },
+        'v': { zhuyin: 'ㄒ', finger: 'left-index', color: 'highlight-blue' },
+        'b': { zhuyin: 'ㄖ', finger: 'left-index', color: 'highlight-blue' },
+        'n': { zhuyin: 'ㄙ', finger: 'right-index', color: 'highlight-red' },
+        'm': { zhuyin: 'ㄩ', finger: 'right-index', color: 'highlight-red' },
+        ',': { zhuyin: 'ㄝ', finger: 'right-middle', color: 'highlight-purple' },
+        '.': { zhuyin: 'ㄡ', finger: 'right-ring', color: 'highlight-yellow' },
+        '/': { zhuyin: 'ㄥ', finger: 'right-pinky', color: 'highlight-green' },
+        ' ': { zhuyin: '', finger: '', color: '' }
+    };
+
+    let currentKey = null;
+    let isPlaying = false;
+    // Filter out empty space key for challenge
+    const allKeys = Object.keys(keyMap).filter(key => key !== ' ');
+
+    const challengeEl = document.getElementById('challenge');
+    const messageEl = document.getElementById('message');
+    const startButton = document.getElementById('startButton');
+
+    // Function to remove all highlight classes
+    function clearHighlights() {
+        const highlightedKeys = document.querySelectorAll('.key');
+        highlightedKeys.forEach(key => {
+            Object.values(keyMap).forEach(item => {
+                if (item.color) { // Add check for non-empty color
+                    key.classList.remove(item.color);
+                }
+            });
+        });
+        const highlightedFingers = document.querySelectorAll('.finger');
+        highlightedFingers.forEach(finger => {
+            Object.values(keyMap).forEach(item => {
+                if (item.color) { // Add check for non-empty color
+                    finger.classList.remove(item.color);
+                }
+            });
+        });
+    }
+
+    // Function to start a new round
+    function nextRound() {
+        if (!isPlaying) return;
+        clearHighlights();
+
+        // Get a random key from the map
+        const randomKey = allKeys[Math.floor(Math.random() * allKeys.length)];
+        currentKey = randomKey;
+
+        // Get the challenge data
+        const challengeData = keyMap[currentKey];
+        const zhuyinSymbol = challengeData.zhuyin;
+        const fingerId = `finger-${challengeData.finger}`;
+        let keyId = `key-${currentKey}`;
+        if (currentKey === ';') keyId = 'key-semicolon';
+        if (currentKey === '.') keyId = 'key-period';
+        if (currentKey === ',') keyId = 'key-comma';
+        if (currentKey === '/') keyId = 'key-slash';
+        if (currentKey === '-') keyId = 'key--';
+        if (currentKey === '=') keyId = 'key-equal';
+        if (currentKey === '\'') keyId = 'key-quote';
+        if (currentKey === '[') keyId = 'key-open-bracket';
+        if (currentKey === ']') keyId = 'key-close-bracket';
+        if (currentKey === ' ') keyId = 'key-space';
+
+        const highlightColor = challengeData.color;
+        
+        // Update UI with new challenge
+        challengeEl.textContent = zhuyinSymbol;
+        messageEl.textContent = '請輸入對應的注音符號鍵...';
+
+        // Add highlight classes
+        const keyEl = document.getElementById(keyId);
+        const fingerEl = document.getElementById(fingerId);
+        if (keyEl && fingerEl) {
+            keyEl.classList.add(highlightColor);
+            if (challengeData.finger) {
+                fingerEl.classList.add(highlightColor);
+            }
+        }
+    }
+
+    // Handle user input
+    function handleKeyDown(event) {
+        if (!isPlaying || !currentKey) return;
+        
+        const pressedKey = event.key.toLowerCase();
+        
+        if (pressedKey === currentKey.toLowerCase()) {
+            messageEl.textContent = '正確！👏';
+            setTimeout(() => {
+                nextRound();
+            }, 1000); // Wait 1 second before next round
+        } else {
+            messageEl.textContent = '錯誤！請再試一次...';
+            // Optional: provide more feedback for wrong key
+        }
+    }
+
+    // Start the game
+    startButton.addEventListener('click', () => {
+        isPlaying = true;
+        startButton.style.display = 'none';
+        messageEl.textContent = '開始練習！';
+        setTimeout(() => {
+            nextRound();
+        }, 1000);
+    });
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Initial setup to display keyboard and fingers
+    // The HTML is already pre-populated, but we need to remove the initial highlight classes
+    // and apply finger color classes to keys
+    window.onload = function() {
+        clearHighlights();
+        
+        // Apply finger color classes to keys
+        Object.keys(keyMap).forEach(key => {
+            if (key === ' ') return; // Skip space key
+            
+            const fingerType = keyMap[key].finger;
+            if (!fingerType) return;
+            
+            let keyId = `key-${key}`;
+            if (key === ';') keyId = 'key-semicolon';
+            if (key === '.') keyId = 'key-period';
+            if (key === ',') keyId = 'key-comma';
+            if (key === '/') keyId = 'key-slash';
+            if (key === '-') keyId = 'key--';
+            if (key === '=') keyId = 'key-equal';
+            if (key === '\'') keyId = 'key-quote';
+            if (key === '[') keyId = 'key-open-bracket';
+            if (key === ']') keyId = 'key-close-bracket';
+            
+            const keyEl = document.getElementById(keyId);
+            if (keyEl) {
+                keyEl.classList.add(`${fingerType}-key`);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
