@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>網頁測驗系統</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .hidden { display: none; }
+    button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px 5px 5px 0; font-size: 16px; }
+    button:hover { background-color: #0056b3; }
+    button:disabled { background-color: #cccccc; cursor: not-allowed; }
+    .option-btn { display: block; width: 100%; text-align: left; background: #f8f9fa; color: #333; border: 1px solid #ccc; margin: 8px 0; padding: 12px; border-radius: 4px; font-size: 16px; }
+    .option-btn:hover:not(:disabled) { background: #e2e6ea; }
+    .option-btn.correct { background-color: #d4edda !important; border-color: #28a745 !important; color: #155724; font-weight: bold; }
+    .option-btn.wrong { background-color: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; font-weight: bold; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    select, input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    .law-source { background: #e9ecef; padding: 10px; border-left: 4px solid #17a2b8; margin-top: 10px; font-size: 0.95em; }
+    .feedback-box { padding: 12px; margin-top: 15px; border-radius: 4px; font-weight: bold; }
+    .feedback-correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .feedback-wrong { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .wrong-card { border: 1px solid #dc3545; border-radius: 6px; padding: 15px; margin-bottom: 15px; background-color: #fff8f8; }
+    .options-list { margin: 8px 0; padding-left: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 設定與選單頁面 -->
+  <div id="setup-page" class="card">
+    <h2>測驗設定</h2>
+    <div class="form-group">
+      <label for="category-select">選擇類別：</label>
+      <select id="category-select"><option value="ALL">全部類別</option></select>
+    </div>
+    <div class="form-group">
+      <label for="type-select">題型：</label>
+      <select id="type-select">
+        <option value="ALL">全部題型</option>
+        <option value="選擇題">選擇題</option>
+        <option value="是非題">是非題</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="amount-input">出題數量：</label>
+      <input type="number" id="amount-input" value="20" min="1">
+    </div>
+    <button onclick="startQuiz()">開始測驗</button>
+    <button onclick="showStats()" style="background-color: #6c757d;">查看統計數據</button>
+  </div>
+
+  <!-- 2. 測驗進行頁面 -->
+  <div id="quiz-page" class="card hidden">
+    <div style="display: flex; justify-content: space-between;">
+      <span id="progress-text"></span>
+      <span id="question-type-tag" style="color: #6c757d;"></span>
+    </div>
+    <h3 id="question-text" style="margin-top: 15px;"></h3>
+    <div id="options-container"></div>
+    
+    <!-- 反饋訊息提示區 -->
+    <div id="feedback-container" class="hidden"></div>
+
+    <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+      <button id="prev-btn" onclick="changeQuestion(-1)">上一題</button>
+      <button id="next-btn" onclick="manualNextQuestion()">下一題</button>
+      <button id="submit-btn" onclick="submitQuiz()" style="background-color: #28a745;">提交試卷</button>
+    </div>
+  </div>
+
+  <!-- 3. 測驗結果頁面 -->
+  <div id="result-page" class="card hidden">
+    <h2>測驗結果</h2>
+    <p id="score-text" style="font-size: 20px; font-weight: bold;"></p>
+    <div id="review-container"></div>
+    <button onclick="showSetup()" style="margin-top: 15px;">返回主選單</button>
+  </div>
+
+  <!-- 4. 統計數據頁面 -->
+  <div id="stats-page" class="card hidden">
+    <h2>歷史統計分析</h2>
+    <h3>常錯題排行榜 (Top 5)</h3>
+    <div id="wrong-questions-container"></div>
+    
+    <h3 style="margin-top: 30px;">歷次測驗紀錄</h3>
+    <ul id="history-list"></ul>
+    <button onclick="showSetup()">返回主選單</button>
+    <button onclick="clearStats()" style="background-color: #dc3545;">清除統計資料</button>
+  </div>
+
+<script>
+let allQuestions = [];
+let quizQuestions = [];
+let userAnswers = {};
+let currentIndex = 0;
+let autoNextTimer = null; // 計時器變數
+
+// 載入 data.json
+fetch('data.json')
+  .then(res => res.json())
+  .then(data => {
+    allQuestions = data;
+    initCategoryOptions();
+  })
+  .catch(err => alert("無法讀取 data.json 檔案，請確認檔案路徑。"));
+
+function initCategoryOptions() {
+  const categories = [...new Set(allQuestions.map(q => q.category))];
+  const select = document.getElementById('category-select');
+  select.innerHTML = '<option value="ALL">全部類別</option>';
+  categories.forEach(cat => {
+    if(cat) {
+      const opt = document.createElement('option');
+      opt.value = cat; opt.textContent = cat;
+      select.appendChild(opt);
+    }
+  });
+}
+
+function startQuiz() {
+  const cat = document.getElementById('category-select').value;
+  const type = document.getElementById('type-select').value;
+  const amount = parseInt(document.getElementById('amount-input').value) || 20;
+
+  let filtered = allQuestions.filter(q => {
+    const matchCat = (cat === 'ALL' || q.category === cat);
+    const matchType = (type === 'ALL' || q.type === type);
+    return matchCat && matchType;
+  });
+
+  if (filtered.length === 0) {
+    alert("沒有符合條件的題目！");
+    return;
+  }
+
+  filtered.sort(() => Math.random() - 0.5);
+  quizQuestions = filtered.slice(0, amount);
+  
+  userAnswers = {};
+  currentIndex = 0;
+  
+  switchPage('quiz-page');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  // 切換題目時先清除定時器
+  if (autoNextTimer) clearTimeout(autoNextTimer);
+
+  const q = quizQuestions[currentIndex];
+  document.getElementById('progress-text').textContent = `第 ${currentIndex + 1} / ${quizQuestions.length} 題`;
+  document.getElementById('question-type-tag').textContent = `[${q.category}] ${q.type}`;
+  document.getElementById('question-text').textContent = q.question;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  
+  const feedbackContainer = document.getElementById('feedback-container');
+  feedbackContainer.className = 'hidden';
+  feedbackContainer.innerHTML = '';
+
+  let opts = q.type === '是非題' ? ['O', 'X'] : q.options;
+  const hasAnswered = userAnswers.hasOwnProperty(q.id);
+
+  opts.forEach((optText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    const val = q.type === '是非題' ? optText : String(idx + 1);
+    btn.textContent = q.type === '是非題' ? optText : `${idx + 1}. ${optText}`;
+    
+    // 如果這題已經回答過，顯示樣式並停用按鈕
+    if (hasAnswered) {
+      btn.disabled = true;
+      if (val === q.answer) {
+        btn.classList.add('correct'); // 正確答案顯示綠色
+      }
+      if (userAnswers[q.id] === val && val !== q.answer) {
+        btn.classList.add('wrong'); // 選錯的選項顯示紅色
+      }
+    } else {
+      btn.onclick = () => selectOption(val);
+    }
+    
+    container.appendChild(btn);
+  });
+
+  // 如果這題已作答過，重新呈現反饋區
+  if (hasAnswered) {
+    showFeedback(userAnswers[q.id] === q.answer, q);
+  }
+
+  // 按鈕狀態控制
+  document.getElementById('prev-btn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+  document.getElementById('next-btn').style.display = currentIndex === quizQuestions.length - 1 ? 'none' : 'inline-block';
+  document.getElementById('submit-btn').style.display = currentIndex === quizQuestions.length - 1 ? 'inline-block' : 'none';
+}
+
+function selectOption(selectedVal) {
+  const q = quizQuestions[currentIndex];
+  userAnswers[q.id] = selectedVal;
+  
+  const isCorrect = selectedVal === q.answer;
+  renderQuestion(); // 重新渲染套用樣式
+
+  // 如果不是最後一題，設定 2.5 秒後自動進入下一題
+  if (currentIndex < quizQuestions.length - 1) {
+    autoNextTimer = setTimeout(() => {
+      changeQuestion(1);
+    }, 2500);
+  }
+}
+
+function showFeedback(isCorrect, q) {
+  const feedbackContainer = document.getElementById('feedback-container');
+  feedbackContainer.classList.remove('hidden');
+
+  let answerDisplay = q.answer;
+  if (q.type === '選擇題') {
+    const ansIndex = parseInt(q.answer) - 1;
+    if (q.options[ansIndex]) {
+      answerDisplay = `${q.answer}. ${q.options[ansIndex]}`;
+    }
+  }
+
+  if (isCorrect) {
+    feedbackContainer.className = 'feedback-box feedback-correct';
+    feedbackContainer.innerHTML = `✓ 回答正確！`;
+  } else {
+    feedbackContainer.className = 'feedback-box feedback-wrong';
+    feedbackContainer.innerHTML = `
+      ✕ 回答錯誤！<br>
+      <strong>正確答案是：${answerDisplay}</strong>
+      ${q.law_source ? `<div class="law-source">法源依據：${q.law_source}</div>` : ''}
+    `;
+  }
+}
+
+function manualNextQuestion() {
+  if (autoNextTimer) clearTimeout(autoNextTimer);
+  changeQuestion(1);
+}
+
+function changeQuestion(dir) {
+  if (autoNextTimer) clearTimeout(autoNextTimer);
+  currentIndex += dir;
+  renderQuestion();
+}
+
+function submitQuiz() {
+  if (autoNextTimer) clearTimeout(autoNextTimer);
+  
+  let correctCount = 0;
+  const stats = JSON.parse(localStorage.getItem('quiz_stats') || '{"history":[], "wrongCount":{}}');
+
+  quizQuestions.forEach(q => {
+    const isCorrect = userAnswers[q.id] === q.answer;
+    if (isCorrect) {
+      correctCount++;
+    } else {
+      stats.wrongCount[q.id] = (stats.wrongCount[q.id] || 0) + 1;
+    }
+  });
+
+  const accuracy = Math.round((correctCount / quizQuestions.length) * 100);
+  
+  stats.history.push({
+    date: new Date().toLocaleString(),
+    score: accuracy,
+    total: quizQuestions.length,
+    correct: correctCount
+  });
+  localStorage.setItem('quiz_stats', JSON.stringify(stats));
+
+  // 顯示結果
+  document.getElementById('score-text').textContent = `本次正確率：${accuracy}% (${correctCount} / ${quizQuestions.length})`;
+  
+  const reviewContainer = document.getElementById('review-container');
+  reviewContainer.innerHTML = '<h3>答題檢討：</h3>';
+  
+  quizQuestions.forEach((q, idx) => {
+    const uAns = userAnswers[q.id] || "未作答";
+    const isCorrect = uAns === q.answer;
+    const item = document.createElement('div');
+    item.style.marginBottom = "15px";
+    item.style.padding = "10px";
+    item.style.border = `1px solid ${isCorrect ? '#28a745' : '#dc3545'}`;
+    item.style.borderRadius = "5px";
+    
+    item.innerHTML = `
+      <p><strong>${idx + 1}. [${q.type}] ${q.question}</strong></p>
+      <p>您的答案：<span style="color:${isCorrect ? 'green' : 'red'}">${uAns}</span> | 正確答案：<strong>${q.answer}</strong></p>
+      ${q.law_source ? `<div class="law-source">法源依據：${q.law_source}</div>` : ''}
+    `;
+    reviewContainer.appendChild(item);
+  });
+
+  switchPage('result-page');
+}
+
+function showStats() {
+  const stats = JSON.parse(localStorage.getItem('quiz_stats') || '{"history":[], "wrongCount":{}}');
+  
+  // 1. 常錯題 Top 5 詳細列出
+  const wrongContainer = document.getElementById('wrong-questions-container');
+  wrongContainer.innerHTML = '';
+  const sortedWrong = Object.entries(stats.wrongCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  
+  if(sortedWrong.length === 0) {
+    wrongContainer.innerHTML = '<p>目前無錯題紀錄。</p>';
+  } else {
+    sortedWrong.forEach(([qId, count], index) => {
+      const q = allQuestions.find(item => item.id === qId);
+      const card = document.createElement('div');
+      card.className = 'wrong-card';
+      
+      if (q) {
+        // 格式化正確答案文字
+        let ansText = q.answer;
+        if (q.type === '選擇題') {
+          const idx = parseInt(q.answer) - 1;
+          if (q.options[idx]) ansText = `${q.answer}. ${q.options[idx]}`;
+        }
+
+        // 建立選項列表 (僅選擇題)
+        let optionsHtml = '';
+        if (q.type === '選擇題' && q.options) {
+          optionsHtml = '<ol class="options-list">';
+          q.options.forEach(opt => {
+            optionsHtml += `<li>${opt}</li>`;
+          });
+          optionsHtml += '</ol>';
+        }
+
+        card.innerHTML = `
+          <div style="font-weight:bold; color:#dc3545; margin-bottom:5px;">
+            Top ${index + 1} - 累積錯誤：${count} 次
+          </div>
+          <div><strong>[${q.category} - ${q.type}] ${q.question}</strong></div>
+          ${optionsHtml}
+          <div style="margin-top:8px;"><strong>正確答案：</strong><span style="color:#28a745; font-weight:bold;">${ansText}</span></div>
+          ${q.law_source ? `<div class="law-source">法源依據：${q.law_source}</div>` : ''}
+        `;
+      } else {
+        card.innerHTML = `<div><strong>題目 ID: ${qId}</strong> (累積錯誤 ${count} 次，此題目已自題庫中移除)</div>`;
+      }
+      wrongContainer.appendChild(card);
+    });
+  }
+
+  // 2. 歷次紀錄
+  const historyList = document.getElementById('history-list');
+  historyList.innerHTML = '';
+  if(stats.history.length === 0) {
+    historyList.innerHTML = '<li>尚無測驗紀錄</li>';
+  } else {
+    stats.history.slice(-10).reverse().forEach(h => {
+      const li = document.createElement('li');
+      li.textContent = `${h.date} - 正確率：${h.score}% (${h.correct}/${h.total} 題)`;
+      historyList.appendChild(li);
+    });
+  }
+
+  switchPage('stats-page');
+}
+
+function clearStats() {
+  if(confirm("確定要清除所有歷史統計與錯題紀錄嗎？")) {
+    localStorage.removeItem('quiz_stats');
+    showStats();
+  }
+}
+
+function showSetup() { switchPage('setup-page'); }
+
+function switchPage(pageId) {
+  if (autoNextTimer) clearTimeout(autoNextTimer);
+  ['setup-page', 'quiz-page', 'result-page', 'stats-page'].forEach(id => {
+    document.getElementById(id).classList.add('hidden');
+  });
+  document.getElementById(pageId).classList.remove('hidden');
+}
+</script>
+</body>
+</html>
