@@ -81,7 +81,7 @@
   <!-- 4. 統計數據頁面 -->
   <div id="stats-page" class="card hidden">
     <h2>歷史統計分析</h2>
-    <h3>常錯題排行榜 (Top 5)</h3>
+    <h3>常錯題排行榜 (Top 10)</h3>
     <div id="wrong-questions-container"></div>
     
     <h3 style="margin-top: 30px;">歷次測驗紀錄</h3>
@@ -302,10 +302,10 @@ function submitQuiz() {
 function showStats() {
   const stats = JSON.parse(localStorage.getItem('quiz_stats') || '{"history":[], "wrongCount":{}}');
   
-  // 1. 常錯題 Top 5 詳細列出
+  // 1. 常錯題 Top 10 詳細列出
   const wrongContainer = document.getElementById('wrong-questions-container');
   wrongContainer.innerHTML = '';
-  const sortedWrong = Object.entries(stats.wrongCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const sortedWrong = Object.entries(stats.wrongCount).sort((a, b) => b[1] - a[1]).slice(0, 10);
   
   if(sortedWrong.length === 0) {
     wrongContainer.innerHTML = '<p>目前無錯題紀錄。</p>';
