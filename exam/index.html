@@ -3,38 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>採購法測驗系統</title>
+  <title>政府採購法測驗系統</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; }
-    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; max-width: 840px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; }
+    .card { background: white; padding: 24px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
     .hidden { display: none; }
-    button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px 5px 5px 0; font-size: 16px; }
+    button { background-color: #007bff; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; margin: 5px; font-size: 15px; font-weight: 500; transition: background-color 0.2s; }
     button:hover { background-color: #0056b3; }
-    button:disabled { background-color: #cccccc; cursor: not-allowed; }
-    .option-btn { display: block; width: 100%; text-align: left; background: #f8f9fa; color: #333; border: 1px solid #ccc; margin: 8px 0; padding: 12px; border-radius: 4px; font-size: 16px; }
-    .option-btn:hover:not(:disabled) { background: #e2e6ea; }
-    .option-btn.correct { background-color: #d4edda !important; border-color: #28a745 !important; color: #155724; font-weight: bold; }
-    .option-btn.wrong { background-color: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; font-weight: bold; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; }
-    select, input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-    .law-source { background: #e9ecef; padding: 10px; border-left: 4px solid #17a2b8; margin-top: 10px; font-size: 0.95em; }
-    .feedback-box { padding: 12px; margin-top: 15px; border-radius: 4px; font-weight: bold; }
-    .feedback-correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .feedback-wrong { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    .wrong-card { border: 1px solid #dc3545; border-radius: 6px; padding: 15px; margin-bottom: 15px; background-color: #fff8f8; }
-    .options-list { margin: 8px 0; padding-left: 20px; }
+    button:disabled { background-color: #ccc; cursor: not-allowed; }
+    .option-btn { display: block; width: 100%; text-align: left; background: #f8f9fa; color: #333; border: 1px solid #ced4da; margin: 10px 0; padding: 12px 16px; border-radius: 6px; font-size: 15px; line-height: 1.5; cursor: pointer; transition: all 0.2s; }
+    .option-btn:hover { background: #e2e6ea; border-color: #adb5bd; }
+    .option-btn.selected { background: #e8f5e9; border-color: #28a745; color: #155724; font-weight: bold; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; color: #495057; }
+    select, input[type="text"], input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+    select:focus, input:focus { outline: none; border-color: #80bdff; box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); }
+    .law-source { background: #e9ecef; padding: 10px 14px; border-left: 4px solid #17a2b8; margin-top: 10px; border-radius: 0 4px 4px 0; font-size: 14px; color: #495057; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+    .badge-user { background-color: #e3f2fd; color: #0d47a1; }
+    .badge-info { background-color: #f1f3f5; color: #495057; }
+    .badge-wrong-alert { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .loading-spinner { display: inline-block; color: #6c757d; font-style: italic; margin-left: 10px; }
+    .history-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+    .history-table th, .history-table td { border: 1px solid #dee2e6; padding: 8px 12px; text-align: left; }
+    .history-table th { background-color: #f8f9fa; font-weight: 600; }
+    .history-table tr:hover { background-color: #f8f9fa; }
+    .score-badge { font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+    .score-high { color: #28a745; }
+    .score-low { color: #dc3545; }
+    
+    /* 錯題卡片專用樣式 */
+    .wrong-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-left: 4px solid #ef4444;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .wrong-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .wrong-badge {
+      background-color: #fee2e2;
+      color: #991b1b;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+    .answer-box {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .answer-title {
+      color: #166534;
+      font-weight: bold;
+      font-size: 15px;
+    }
+    .law-box {
+      background-color: #f8fafc;
+      border-left: 3px solid #0284c7;
+      padding: 8px 12px;
+      margin-top: 8px;
+      font-size: 13.5px;
+      color: #334155;
+      border-radius: 0 4px 4px 0;
+    }
+    .opt-item {
+      padding: 6px 10px;
+      margin: 4px 0;
+      border-radius: 5px;
+      font-size: 14.5px;
+      color: #374151;
+      background: #f9fafb;
+    }
+    .opt-item.is-correct {
+      background: #dcfce7;
+      color: #14532d;
+      font-weight: 600;
+      border: 1px solid #86efac;
+    }
   </style>
 </head>
 <body>
 
   <!-- 1. 設定與選單頁面 -->
   <div id="setup-page" class="card">
-    <h2>2026採購法--測驗設定</h2>
+    <h2 style="margin-top: 0; color: #212529;">政府採購法 測驗系統</h2>
+    
     <div class="form-group">
-      <label for="category-select">選擇類別：</label>
+      <label for="username-input">填答人姓名／代號：<span style="color: #dc3545;">*</span></label>
+      <input type="text" id="username-input" placeholder="請輸入姓名或代號 (例如: 小明、user01)" required>
+      <small style="color: #6c757d; display: block; margin-top: 4px;">測驗記錄將儲存至 Cloudflare D1 雲端資料庫，跨裝置皆可查詢。</small>
+    </div>
+
+    <div class="form-group">
+      <label for="category-select">選擇題目類別：</label>
       <select id="category-select"><option value="ALL">全部類別</option></select>
     </div>
+    
     <div class="form-group">
       <label for="type-select">題型：</label>
       <select id="type-select">
@@ -43,51 +120,108 @@
         <option value="是非題">是非題</option>
       </select>
     </div>
+
     <div class="form-group">
       <label for="amount-input">出題數量：</label>
-      <input type="number" id="amount-input" value="20" min="1">
+      <input type="number" id="amount-input" value="20" min="1" max="100">
     </div>
-    <button onclick="startQuiz()">開始測驗</button>
-    <button onclick="showStats()" style="background-color: #6c757d;">查看統計數據</button>
+
+    <!-- 常錯題優先出題選項 -->
+    <div class="form-group" style="background-color: #fff5f5; border: 1px solid #fed7d7; padding: 12px 14px; border-radius: 8px;">
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-size: 15px; font-weight: 600; color: #b91c1c;">
+        <input type="checkbox" id="prioritize-wrong-checkbox" style="width: 18px; height: 18px; cursor: pointer;" checked>
+        <span>⚠️ 優先出常錯題（高頻錯題強化模式）</span>
+      </label>
+      <small style="color: #7f1d1d; display: block; margin-top: 5px; line-height: 1.4;">
+        勾選後將優先抽取該類別中您或大家最常錯的題目（約佔 50%～60%），強化複習弱點！
+      </small>
+    </div>
+
+    <div style="margin-top: 25px;">
+      <button id="start-quiz-btn" onclick="startQuiz()">🚀 開始測驗</button>
+      <button onclick="showStats()" style="background-color: #6c757d;">📊 查看雲端統計數據</button>
+    </div>
   </div>
 
   <!-- 2. 測驗進行頁面 -->
   <div id="quiz-page" class="card hidden">
-    <div style="display: flex; justify-content: space-between;">
-      <span id="progress-text"></span>
-      <span id="question-type-tag" style="color: #6c757d;"></span>
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+      <span id="progress-text" style="font-weight: bold; color: #495057;"></span>
+      <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+        <span id="question-wrong-tag" class="badge badge-wrong-alert" style="display: none;"></span>
+        <span id="user-display-tag" class="badge badge-user"></span>
+        <span id="question-type-tag" class="badge badge-info"></span>
+      </div>
     </div>
-    <h3 id="question-text" style="margin-top: 15px;"></h3>
+    
+    <h3 id="question-text" style="margin-top: 18px; line-height: 1.6; font-size: 18px;"></h3>
     <div id="options-container"></div>
     
-    <!-- 反饋訊息提示區 -->
-    <div id="feedback-container" class="hidden"></div>
-
-    <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-      <button id="prev-btn" onclick="changeQuestion(-1)">上一題</button>
-      <button id="next-btn" onclick="manualNextQuestion()">下一題</button>
-      <button id="submit-btn" onclick="submitQuiz()" style="background-color: #28a745;">提交試卷</button>
+    <div style="margin-top: 25px; display: flex; justify-content: space-between; align-items: center;">
+      <button id="prev-btn" onclick="changeQuestion(-1)" style="background-color: #6c757d;">上一題</button>
+      <div>
+        <button id="next-btn" onclick="changeQuestion(1)">下一題</button>
+        <button id="submit-btn" onclick="submitQuiz()" style="background-color: #28a745;">提交試卷</button>
+      </div>
     </div>
   </div>
 
   <!-- 3. 測驗結果頁面 -->
   <div id="result-page" class="card hidden">
-    <h2>測驗結果</h2>
-    <p id="score-text" style="font-size: 20px; font-weight: bold;"></p>
+    <h2 style="margin-top: 0;">測驗結果</h2>
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+      <p id="score-text" style="font-size: 22px; font-weight: bold; margin: 0;"></p>
+      <p id="save-status-text" style="margin: 8px 0 0 0; font-size: 14px; color: #6c757d;"></p>
+    </div>
+    
     <div id="review-container"></div>
-    <button onclick="showSetup()" style="margin-top: 15px;">返回主選單</button>
+    
+    <div style="margin-top: 25px;">
+      <button onclick="showSetup()">返回主選單</button>
+      <button onclick="showStats()" style="background-color: #6c757d;">查看統計數據</button>
+    </div>
   </div>
 
   <!-- 4. 統計數據頁面 -->
   <div id="stats-page" class="card hidden">
-    <h2>歷史統計分析</h2>
-    <h3>常錯題排行榜 (Top 10)</h3>
-    <div id="wrong-questions-container"></div>
+    <h2 style="margin-top: 0;">雲端歷史統計分析 (Cloudflare D1)</h2>
     
-    <h3 style="margin-top: 30px;">歷次測驗紀錄</h3>
-    <ul id="history-list"></ul>
-    <button onclick="showSetup()">返回主選單</button>
-    <button onclick="clearStats()" style="background-color: #dc3545;">清除統計資料</button>
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap;">
+      <label for="stats-user-select" style="margin: 0;">資料範圍：</label>
+      <select id="stats-user-select" onchange="loadStatsFromCloud()" style="width: auto; min-width: 160px;">
+        <option value="CURRENT">我的個人紀錄</option>
+        <option value="ALL">全體 / 跨裝置總榜</option>
+      </select>
+      <button onclick="loadStatsFromCloud()" style="padding: 7px 14px; margin: 0;">🔄 重新整理</button>
+      <span id="stats-loading" class="loading-spinner hidden">資料載入中...</span>
+    </div>
+
+    <!-- 總量統計看板 -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 25px;">
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 14px 18px; border-radius: 8px;">
+        <div style="font-size: 13px; color: #1e40af; font-weight: 600;">👥 全部受試人數</div>
+        <div id="stat-total-users" style="font-size: 24px; font-weight: bold; color: #1e3a8a; margin-top: 4px;">- 人</div>
+      </div>
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 14px 18px; border-radius: 8px;">
+        <div style="font-size: 13px; color: #166534; font-weight: 600;">📝 全部測驗人次</div>
+        <div id="stat-total-attempts" style="font-size: 24px; font-weight: bold; color: #14532d; margin-top: 4px;">- 次</div>
+      </div>
+      <div id="stat-user-box" style="background: #faf5ff; border: 1px solid #e9d5ff; padding: 14px 18px; border-radius: 8px;">
+        <div id="stat-user-label" style="font-size: 13px; color: #6b21a8; font-weight: 600;">👤 個人測驗人次</div>
+        <div id="stat-user-attempts" style="font-size: 24px; font-weight: bold; color: #581c87; margin-top: 4px;">- 次</div>
+      </div>
+    </div>
+
+    <h3 style="color: #b91c1c;">⚠️ 常錯題排行榜 (Top 15 - 附正確答案與解析)</h3>
+    <div id="wrong-questions-container"></div>
+
+    <h3 style="margin-top: 30px;">📋 歷次測驗紀錄 (顯示最近 10 筆)</h3>
+    <div id="history-container" style="overflow-x: auto;"></div>
+
+    <div style="margin-top: 30px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+      <button onclick="showSetup()">返回主選單</button>
+      <button onclick="clearMyStats()" style="background-color: #dc3545;">清除目前填答人雲端紀錄</button>
+    </div>
   </div>
 
 <script>
@@ -95,38 +229,72 @@ let allQuestions = [];
 let quizQuestions = [];
 let userAnswers = {};
 let currentIndex = 0;
-let autoNextTimer = null; // 計時器變數
+let currentUserName = '';
+let currentCategory = 'ALL';
+let currentType = 'ALL';
 
-// 載入 data.json
+// 自動判斷後端 API 基礎路徑：
+// 若在 Cloudflare Pages (pages.dev) 則使用同源相對路徑；
+// 若在 GitHub Pages (github.io) 或其他外部網頁空間，自動跨網域連線至 Cloudflare 雲端後端
+const API_BASE = window.location.hostname.includes('pages.dev')
+  ? ''
+  : 'https://procurement-exam-3t3.pages.dev';
+
+// 頁面載入時讀取暫存的姓名
+window.addEventListener('DOMContentLoaded', () => {
+  const savedName = localStorage.getItem('quiz_username') || '';
+  if (savedName) {
+    document.getElementById('username-input').value = savedName;
+  }
+});
+
+// 初始化：載入 data.json
 fetch('data.json')
   .then(res => res.json())
   .then(data => {
     allQuestions = data;
     initCategoryOptions();
   })
-  .catch(err => alert("無法讀取 data.json 檔案，請確認檔案路徑。"));
+  .catch(err => {
+    console.error(err);
+    alert("無法讀取 data.json 檔案，請確認檔案路徑。");
+  });
 
 function initCategoryOptions() {
   const categories = [...new Set(allQuestions.map(q => q.category))];
   const select = document.getElementById('category-select');
-  select.innerHTML = '<option value="ALL">全部類別</option>';
   categories.forEach(cat => {
     if(cat) {
       const opt = document.createElement('option');
-      opt.value = cat; opt.textContent = cat;
+      opt.value = cat; 
+      opt.textContent = cat;
       select.appendChild(opt);
     }
   });
 }
 
-function startQuiz() {
-  const cat = document.getElementById('category-select').value;
-  const type = document.getElementById('type-select').value;
-  const amount = parseInt(document.getElementById('amount-input').value) || 20;
+async function startQuiz() {
+  const nameInput = document.getElementById('username-input');
+  currentUserName = nameInput.value.trim();
+  
+  if (!currentUserName) {
+    alert("請先輸入填答人姓名或代號！");
+    nameInput.focus();
+    return;
+  }
 
+  // 記住姓名至本機儲存
+  localStorage.setItem('quiz_username', currentUserName);
+
+  currentCategory = document.getElementById('category-select').value;
+  currentType = document.getElementById('type-select').value;
+  const amount = parseInt(document.getElementById('amount-input').value) || 20;
+  const prioritizeWrong = document.getElementById('prioritize-wrong-checkbox').checked;
+
+  // 篩選題目
   let filtered = allQuestions.filter(q => {
-    const matchCat = (cat === 'ALL' || q.category === cat);
-    const matchType = (type === 'ALL' || q.type === type);
+    const matchCat = (currentCategory === 'ALL' || q.category === currentCategory);
+    const matchType = (currentType === 'ALL' || q.type === currentType);
     return matchCat && matchType;
   });
 
@@ -135,9 +303,107 @@ function startQuiz() {
     return;
   }
 
-  filtered.sort(() => Math.random() - 0.5);
-  quizQuestions = filtered.slice(0, amount);
-  
+  const startBtn = document.getElementById('start-quiz-btn');
+  const originalBtnText = startBtn.textContent;
+
+  // 若開啟「優先出常錯題」模式
+  if (prioritizeWrong) {
+    startBtn.disabled = true;
+    startBtn.textContent = '⏳ 正在分析常錯題庫...';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/stats?user=${encodeURIComponent(currentUserName)}`);
+      const data = await res.json();
+
+      if (data.success) {
+        const wrongMap = new Map();
+
+        // 1. 先收錄全站常錯題
+        if (Array.isArray(data.globalWrongQuestions)) {
+          data.globalWrongQuestions.forEach(item => {
+            wrongMap.set(item.question_id, {
+              count: item.wrong_count,
+              isPersonal: false
+            });
+          });
+        }
+
+        // 2. 本人常錯題權重最高 (覆蓋全站標記)
+        if (Array.isArray(data.wrongQuestions)) {
+          data.wrongQuestions.forEach(item => {
+            wrongMap.set(item.question_id, {
+              count: item.wrong_count,
+              isPersonal: true
+            });
+          });
+        }
+
+        const wrongPool = [];
+        const normalPool = [];
+
+        filtered.forEach(q => {
+          // 清除舊標記
+          delete q._isWrong;
+          delete q._wrongCount;
+          delete q._isPersonal;
+
+          if (wrongMap.has(q.id)) {
+            const info = wrongMap.get(q.id);
+            q._isWrong = true;
+            q._wrongCount = info.count;
+            q._isPersonal = info.isPersonal;
+            wrongPool.push(q);
+          } else {
+            normalPool.push(q);
+          }
+        });
+
+        // 錯題排序（個人優先、錯誤次數多的優先，加入適量隨機性以多樣出題）
+        wrongPool.sort((a, b) => {
+          const scoreA = (a._isPersonal ? 100 : 0) + a._wrongCount + Math.random() * 3;
+          const scoreB = (b._isPersonal ? 100 : 0) + b._wrongCount + Math.random() * 3;
+          return scoreB - scoreA;
+        });
+        normalPool.sort(() => Math.random() - 0.5);
+
+        // 常錯題優先佔比：最多佔總題數約 50%～60%
+        const targetWrongCount = Math.min(wrongPool.length, Math.ceil(amount * 0.6));
+        const targetNormalCount = amount - targetWrongCount;
+
+        const selectedWrong = wrongPool.slice(0, targetWrongCount);
+        let selectedNormal = normalPool.slice(0, targetNormalCount);
+
+        // 若一般題不夠，補足錯題
+        if (selectedWrong.length + selectedNormal.length < amount) {
+          const remainingWrong = wrongPool.slice(targetWrongCount, amount - selectedNormal.length);
+          selectedWrong.push(...remainingWrong);
+        }
+
+        quizQuestions = [...selectedWrong, ...selectedNormal];
+        // 隨機打散出題順序
+        quizQuestions.sort(() => Math.random() - 0.5);
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (err) {
+      console.warn('載入常錯題失敗，採用一般隨機抽題:', err);
+      filtered.sort(() => Math.random() - 0.5);
+      quizQuestions = filtered.slice(0, amount);
+    } finally {
+      startBtn.disabled = false;
+      startBtn.textContent = originalBtnText;
+    }
+  } else {
+    // 一般隨機出題
+    filtered.forEach(q => {
+      delete q._isWrong;
+      delete q._wrongCount;
+      delete q._isPersonal;
+    });
+    filtered.sort(() => Math.random() - 0.5);
+    quizQuestions = filtered.slice(0, amount);
+  }
+
   userAnswers = {};
   currentIndex = 0;
   
@@ -146,23 +412,37 @@ function startQuiz() {
 }
 
 function renderQuestion() {
-  // 切換題目時先清除定時器
-  if (autoNextTimer) clearTimeout(autoNextTimer);
-
   const q = quizQuestions[currentIndex];
   document.getElementById('progress-text').textContent = `第 ${currentIndex + 1} / ${quizQuestions.length} 題`;
-  document.getElementById('question-type-tag').textContent = `[${q.category}] ${q.type}`;
-  document.getElementById('question-text').textContent = q.question;
+  document.getElementById('user-display-tag').textContent = `👤 ${currentUserName}`;
+  
+  // 題型標籤
+  const typeTag = document.getElementById('question-type-tag');
+  typeTag.textContent = `[${q.category}] ${q.type}`;
+
+  // 常錯題圖示與標籤
+  const wrongTag = document.getElementById('question-wrong-tag');
+  if (q._isWrong) {
+    wrongTag.style.display = 'inline-block';
+    wrongTag.textContent = q._isPersonal 
+      ? `⚠️ 本人常錯題 (錯 ${q._wrongCount} 次)` 
+      : `⚠️ 大家常錯題 (累計錯 ${q._wrongCount} 次)`;
+  } else {
+    wrongTag.style.display = 'none';
+  }
+
+  // 題目內容（如果是常錯題，題目開頭也加上醒目標記）
+  const qTextEl = document.getElementById('question-text');
+  if (q._isWrong) {
+    qTextEl.innerHTML = `<span style="display:inline-block; background-color:#fee2e2; color:#b91c1c; font-size:13px; font-weight:bold; padding:2px 8px; border-radius:4px; margin-right:6px; vertical-align:middle; border:1px solid #fca5a5;">⚠️ 常錯強化題</span> ${q.question}`;
+  } else {
+    qTextEl.textContent = q.question;
+  }
 
   const container = document.getElementById('options-container');
   container.innerHTML = '';
-  
-  const feedbackContainer = document.getElementById('feedback-container');
-  feedbackContainer.className = 'hidden';
-  feedbackContainer.innerHTML = '';
 
   let opts = q.type === '是非題' ? ['O', 'X'] : q.options;
-  const hasAnswered = userAnswers.hasOwnProperty(q.id);
 
   opts.forEach((optText, idx) => {
     const btn = document.createElement('button');
@@ -170,112 +450,51 @@ function renderQuestion() {
     const val = q.type === '是非題' ? optText : String(idx + 1);
     btn.textContent = q.type === '是非題' ? optText : `${idx + 1}. ${optText}`;
     
-    // 如果這題已經回答過，顯示樣式並停用按鈕
-    if (hasAnswered) {
-      btn.disabled = true;
-      if (val === q.answer) {
-        btn.classList.add('correct'); // 正確答案顯示綠色
-      }
-      if (userAnswers[q.id] === val && val !== q.answer) {
-        btn.classList.add('wrong'); // 選錯的選項顯示紅色
-      }
-    } else {
-      btn.onclick = () => selectOption(val);
-    }
+    if (userAnswers[q.id] === val) btn.classList.add('selected');
     
+    btn.onclick = () => {
+      userAnswers[q.id] = val;
+      renderQuestion();
+    };
     container.appendChild(btn);
   });
 
-  // 如果這題已作答過，重新呈現反饋區
-  if (hasAnswered) {
-    showFeedback(userAnswers[q.id] === q.answer, q);
-  }
-
-  // 按鈕狀態控制
   document.getElementById('prev-btn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
   document.getElementById('next-btn').style.display = currentIndex === quizQuestions.length - 1 ? 'none' : 'inline-block';
   document.getElementById('submit-btn').style.display = currentIndex === quizQuestions.length - 1 ? 'inline-block' : 'none';
 }
 
-function selectOption(selectedVal) {
-  const q = quizQuestions[currentIndex];
-  userAnswers[q.id] = selectedVal;
-  
-  const isCorrect = selectedVal === q.answer;
-  renderQuestion(); // 重新渲染套用樣式
-
-  // 如果不是最後一題，設定 2.5 秒後自動進入下一題
-  if (currentIndex < quizQuestions.length - 1) {
-    autoNextTimer = setTimeout(() => {
-      changeQuestion(1);
-    }, 2500);
-  }
-}
-
-function showFeedback(isCorrect, q) {
-  const feedbackContainer = document.getElementById('feedback-container');
-  feedbackContainer.classList.remove('hidden');
-
-  let answerDisplay = q.answer;
-  if (q.type === '選擇題') {
-    const ansIndex = parseInt(q.answer) - 1;
-    if (q.options[ansIndex]) {
-      answerDisplay = `${q.answer}. ${q.options[ansIndex]}`;
-    }
-  }
-
-  if (isCorrect) {
-    feedbackContainer.className = 'feedback-box feedback-correct';
-    feedbackContainer.innerHTML = `✓ 回答正確！`;
-  } else {
-    feedbackContainer.className = 'feedback-box feedback-wrong';
-    feedbackContainer.innerHTML = `
-      ✕ 回答錯誤！<br>
-      <strong>正確答案是：${answerDisplay}</strong>
-      ${q.law_source ? `<div class="law-source">法源依據：${q.law_source}</div>` : ''}
-    `;
-  }
-}
-
-function manualNextQuestion() {
-  if (autoNextTimer) clearTimeout(autoNextTimer);
-  changeQuestion(1);
-}
-
 function changeQuestion(dir) {
-  if (autoNextTimer) clearTimeout(autoNextTimer);
   currentIndex += dir;
   renderQuestion();
 }
 
-function submitQuiz() {
-  if (autoNextTimer) clearTimeout(autoNextTimer);
-  
+async function submitQuiz() {
   let correctCount = 0;
-  const stats = JSON.parse(localStorage.getItem('quiz_stats') || '{"history":[], "wrongCount":{}}');
+  const wrongQuestions = [];
 
   quizQuestions.forEach(q => {
     const isCorrect = userAnswers[q.id] === q.answer;
     if (isCorrect) {
       correctCount++;
     } else {
-      stats.wrongCount[q.id] = (stats.wrongCount[q.id] || 0) + 1;
+      wrongQuestions.push({
+        id: q.id,
+        question: q.question,
+        answer: q.answer,
+        lawSource: q.law_source
+      });
     }
   });
 
   const accuracy = Math.round((correctCount / quizQuestions.length) * 100);
   
-  stats.history.push({
-    date: new Date().toLocaleString(),
-    score: accuracy,
-    total: quizQuestions.length,
-    correct: correctCount
-  });
-  localStorage.setItem('quiz_stats', JSON.stringify(stats));
-
   // 顯示結果
-  document.getElementById('score-text').textContent = `本次正確率：${accuracy}% (${correctCount} / ${quizQuestions.length})`;
-  
+  document.getElementById('score-text').textContent = `本次正確率：${accuracy}% (${correctCount} / ${quizQuestions.length} 題)`;
+  const statusEl = document.getElementById('save-status-text');
+  statusEl.textContent = '☁️ 正在將答題紀錄儲存至 Cloudflare D1 資料庫...';
+
+  // 組合檢討清單
   const reviewContainer = document.getElementById('review-container');
   reviewContainer.innerHTML = '<h3>答題檢討：</h3>';
   
@@ -284,98 +503,225 @@ function submitQuiz() {
     const isCorrect = uAns === q.answer;
     const item = document.createElement('div');
     item.style.marginBottom = "15px";
-    item.style.padding = "10px";
+    item.style.padding = "14px";
     item.style.border = `1px solid ${isCorrect ? '#28a745' : '#dc3545'}`;
-    item.style.borderRadius = "5px";
+    item.style.borderRadius = "6px";
+    item.style.backgroundColor = isCorrect ? '#fbfdfb' : '#fffdfd';
     
     item.innerHTML = `
-      <p><strong>${idx + 1}. [${q.type}] ${q.question}</strong></p>
-      <p>您的答案：<span style="color:${isCorrect ? 'green' : 'red'}">${uAns}</span> | 正確答案：<strong>${q.answer}</strong></p>
+      <p style="margin: 0 0 8px 0;">
+        ${q._isWrong ? '<span style="color:#dc2626; font-weight:bold; font-size:13px; margin-right:4px;">[⚠️常錯題]</span>' : ''}
+        <strong>${idx + 1}. ${q.question}</strong>
+      </p>
+      <p style="margin: 0;">您的答案：<span style="font-weight:bold; color:${isCorrect ? '#28a745' : '#dc3545'}">${uAns}</span> | 正確答案：<strong>${q.answer}</strong></p>
       ${q.law_source ? `<div class="law-source">法源依據：${q.law_source}</div>` : ''}
     `;
     reviewContainer.appendChild(item);
   });
 
   switchPage('result-page');
+
+  // 發送至 Cloudflare D1
+  try {
+    const res = await fetch(`${API_BASE}/api/submit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userName: currentUserName,
+        category: currentCategory,
+        quizType: currentType,
+        total: quizQuestions.length,
+        correct: correctCount,
+        score: accuracy,
+        wrongQuestions: wrongQuestions
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      statusEl.textContent = `✅ 紀錄已成功同步至雲端 D1 資料庫 (填答人: ${currentUserName})`;
+      statusEl.style.color = '#28a745';
+    } else {
+      throw new Error(result.error || '儲存失敗');
+    }
+  } catch (err) {
+    console.error('儲存至雲端失敗:', err);
+    statusEl.textContent = `⚠️ 雲端同步失敗（${err.message}），已留存於當前畫面。`;
+    statusEl.style.color = '#dc3545';
+  }
 }
 
 function showStats() {
-  const stats = JSON.parse(localStorage.getItem('quiz_stats') || '{"history":[], "wrongCount":{}}');
-  
-  // 1. 常錯題 Top 10 詳細列出
-  const wrongContainer = document.getElementById('wrong-questions-container');
-  wrongContainer.innerHTML = '';
-  const sortedWrong = Object.entries(stats.wrongCount).sort((a, b) => b[1] - a[1]).slice(0, 10);
-  
-  if(sortedWrong.length === 0) {
-    wrongContainer.innerHTML = '<p>目前無錯題紀錄。</p>';
-  } else {
-    sortedWrong.forEach(([qId, count], index) => {
-      const q = allQuestions.find(item => item.id === qId);
-      const card = document.createElement('div');
-      card.className = 'wrong-card';
-      
-      if (q) {
-        // 格式化正確答案文字
-        let ansText = q.answer;
-        if (q.type === '選擇題') {
-          const idx = parseInt(q.answer) - 1;
-          if (q.options[idx]) ansText = `${q.answer}. ${q.options[idx]}`;
-        }
-
-        // 建立選項列表 (僅選擇題)
-        let optionsHtml = '';
-        if (q.type === '選擇題' && q.options) {
-          optionsHtml = '<ol class="options-list">';
-          q.options.forEach(opt => {
-            optionsHtml += `<li>${opt}</li>`;
-          });
-          optionsHtml += '</ol>';
-        }
-
-        card.innerHTML = `
-          <div style="font-weight:bold; color:#dc3545; margin-bottom:5px;">
-            Top ${index + 1} - 累積錯誤：${count} 次
-          </div>
-          <div><strong>[${q.category} - ${q.type}] ${q.question}</strong></div>
-          ${optionsHtml}
-          <div style="margin-top:8px;"><strong>正確答案：</strong><span style="color:#28a745; font-weight:bold;">${ansText}</span></div>
-          ${q.law_source ? `<div class="law-source">法源依據：${q.law_source}</div>` : ''}
-        `;
-      } else {
-        card.innerHTML = `<div><strong>題目 ID: ${qId}</strong> (累積錯誤 ${count} 次，此題目已自題庫中移除)</div>`;
-      }
-      wrongContainer.appendChild(card);
-    });
+  const nameInput = document.getElementById('username-input');
+  if (nameInput.value.trim()) {
+    currentUserName = nameInput.value.trim();
   }
-
-  // 2. 歷次紀錄
-  const historyList = document.getElementById('history-list');
-  historyList.innerHTML = '';
-  if(stats.history.length === 0) {
-    historyList.innerHTML = '<li>尚無測驗紀錄</li>';
-  } else {
-    stats.history.slice(-10).reverse().forEach(h => {
-      const li = document.createElement('li');
-      li.textContent = `${h.date} - 正確率：${h.score}% (${h.correct}/${h.total} 題)`;
-      historyList.appendChild(li);
-    });
-  }
-
   switchPage('stats-page');
+  loadStatsFromCloud();
 }
 
-function clearStats() {
-  if(confirm("確定要清除所有歷史統計與錯題紀錄嗎？")) {
-    localStorage.removeItem('quiz_stats');
-    showStats();
+async function loadStatsFromCloud() {
+  const scope = document.getElementById('stats-user-select').value;
+  const targetUser = (scope === 'CURRENT') ? (currentUserName || localStorage.getItem('quiz_username') || '') : 'ALL';
+  const loading = document.getElementById('stats-loading');
+  loading.classList.remove('hidden');
+
+  const wrongContainer = document.getElementById('wrong-questions-container');
+  const historyContainer = document.getElementById('history-container');
+  wrongContainer.innerHTML = '<p style="color:#6c757d;">載入中...</p>';
+  historyContainer.innerHTML = '<p style="color:#6c757d;">載入中...</p>';
+
+  try {
+    const url = `${API_BASE}/api/stats?user=${encodeURIComponent(targetUser)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.success) throw new Error(data.error);
+
+    // 0. 更新看板數據 (全部人數、全部測驗人次、個人人次)
+    document.getElementById('stat-total-users').textContent = `${data.totalUsers || 0} 人`;
+    document.getElementById('stat-total-attempts').textContent = `${data.totalAttempts || 0} 次`;
+    
+    if (targetUser && targetUser !== 'ALL') {
+      document.getElementById('stat-user-label').textContent = `👤 「${targetUser}」測驗人次`;
+      document.getElementById('stat-user-attempts').textContent = `${data.userAttempts || 0} 次`;
+    } else {
+      document.getElementById('stat-user-label').textContent = '👤 目前選定範圍';
+      document.getElementById('stat-user-attempts').textContent = '全體彙整';
+    }
+
+    // 1. 渲染錯題排行榜 (清楚列出正確答案與選項)
+    wrongContainer.innerHTML = '';
+    if (!data.wrongQuestions || data.wrongQuestions.length === 0) {
+      wrongContainer.innerHTML = '<p style="color:#28a745; background:#e8f5e9; padding:12px; border-radius:6px; font-weight:500;">目前無錯題紀錄，繼續保持！🎉</p>';
+    } else {
+      data.wrongQuestions.forEach(item => {
+        const q = allQuestions.find(it => it.id === item.question_id);
+        const questionText = item.question_text || (q ? q.question : item.question_id);
+        const category = q ? q.category : '';
+        const type = q ? q.type : '';
+        const rawAnswer = (q ? q.answer : item.correct_answer) || '';
+        const lawSource = (q ? q.law_source : item.law_source) || '';
+        
+        // 解析正確答案文字與選項
+        let answerDisplay = '';
+        let optionsListHtml = '';
+
+        if (q && q.type === '是非題') {
+          const isO = (rawAnswer === 'O' || rawAnswer === '1');
+          answerDisplay = isO ? '⭕ 是 (O)' : '❌ 否 (X)';
+        } else if (q && q.type === '選擇題') {
+          const ansIdx = parseInt(rawAnswer) - 1;
+          const ansText = (q.options && q.options[ansIdx]) ? q.options[ansIdx] : '';
+          answerDisplay = `第 ${rawAnswer} 項：${ansText}`;
+
+          if (q.options && q.options.length > 0) {
+            optionsListHtml = '<div style="margin: 8px 0;">' +
+              q.options.map((opt, idx) => {
+                const isCorrect = String(idx + 1) === String(rawAnswer);
+                return `<div class="opt-item ${isCorrect ? 'is-correct' : ''}">
+                  ${idx + 1}. ${opt} ${isCorrect ? '<span style="color:#15803d; font-weight:bold; margin-left:6px;">(✓ 正確答案)</span>' : ''}
+                </div>`;
+              }).join('') +
+              '</div>';
+          }
+        } else {
+          answerDisplay = rawAnswer || '詳見法源依據';
+        }
+
+        const card = document.createElement('div');
+        card.className = 'wrong-card';
+        card.innerHTML = `
+          <div class="wrong-header">
+            <div>
+              <span class="wrong-badge">⚠️ 累計錯誤 ${item.wrong_count} 次</span>
+              ${category ? `<span class="badge badge-info" style="margin-left:6px;">[${category}] ${type}</span>` : ''}
+            </div>
+            <span style="font-size:12px; color:#9ca3af;">題號: ${item.question_id}</span>
+          </div>
+          <div style="font-weight: 600; font-size: 16px; margin: 8px 0; color: #1f2937; line-height: 1.5;">
+            ${questionText}
+          </div>
+          ${optionsListHtml}
+          <div class="answer-box">
+            <div class="answer-title">✅ 正確答案：${answerDisplay}</div>
+            ${lawSource ? `<div class="law-box">📜 法源依據：${lawSource}</div>` : ''}
+          </div>
+        `;
+        wrongContainer.appendChild(card);
+      });
+    }
+
+    // 2. 渲染歷次測驗紀錄 (只顯示最近 10 筆)
+    if (!data.history || data.history.length === 0) {
+      historyContainer.innerHTML = '<p style="color:#6c757d;">尚無測驗紀錄</p>';
+    } else {
+      let tableHtml = `
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>填答人</th>
+              <th>類別 / 題型</th>
+              <th>成績</th>
+              <th>題數</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      data.history.forEach(h => {
+        const isGood = h.score >= 80;
+        tableHtml += `
+          <tr>
+            <td>${h.created_at || ''}</td>
+            <td><strong>${h.user_name || '匿名'}</strong></td>
+            <td>${h.category} / ${h.quiz_type}</td>
+            <td><span class="score-badge ${isGood ? 'score-high' : 'score-low'}">${h.score}%</span></td>
+            <td>${h.correct_count} / ${h.total_questions}</td>
+          </tr>
+        `;
+      });
+      tableHtml += `</tbody></table>`;
+      historyContainer.innerHTML = tableHtml;
+    }
+  } catch (err) {
+    console.error(err);
+    wrongContainer.innerHTML = `<p style="color:#dc3545;">無法載入錯題資料：${err.message}</p>`;
+    historyContainer.innerHTML = `<p style="color:#dc3545;">無法載入紀錄：${err.message}</p>`;
+  } finally {
+    loading.classList.add('hidden');
+  }
+}
+
+async function clearMyStats() {
+  const targetUser = currentUserName || localStorage.getItem('quiz_username') || '';
+  if (!targetUser) {
+    alert("尚未設定填答人姓名/代號，無法指定清除對象！");
+    return;
+  }
+
+  if (!confirm(`確定要清除填答人「${targetUser}」在雲端 D1 的所有測驗紀錄與錯題排行榜嗎？`)) {
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/stats?user=${encodeURIComponent(targetUser)}`, {
+      method: 'DELETE'
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert(result.message);
+      loadStatsFromCloud();
+    } else {
+      alert("清除失敗: " + result.error);
+    }
+  } catch (err) {
+    alert("連線失敗: " + err.message);
   }
 }
 
 function showSetup() { switchPage('setup-page'); }
 
 function switchPage(pageId) {
-  if (autoNextTimer) clearTimeout(autoNextTimer);
   ['setup-page', 'quiz-page', 'result-page', 'stats-page'].forEach(id => {
     document.getElementById(id).classList.add('hidden');
   });
