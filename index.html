@@ -1,22 +1,1140 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>prolin99 web</title>
-  <!-- include bootstrap 5-->
+  <title>Prolin99 | 數位專案與資源導航</title>
+  <meta name="description" content="Prolin99 的 GitHub 個人網站，包含政府採購法測驗系統、注音與英打指法練習、Scratch 教學與實用軟體檔案下載。">
+  
+  <!-- Favicon icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%20%220%22%20100%20100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            cyan: {
+              400: '#22d3ee',
+              500: '#06b6d4',
+            },
+            dark: {
+              900: '#070a13',
+              800: '#0d1322',
+              700: '#141c30',
+              600: '#1e2942',
+            }
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 3s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            glow: {
+              '0%': { opacity: '0.4' },
+              '100%': { opacity: '0.9' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Custom Glow & Glassmorphism */
+    .glass-nav {
+      background: rgba(13, 19, 34, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .glass-card {
+      background: rgba(20, 28, 48, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .glass-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(99, 102, 241, 0.45);
+      box-shadow: 0 20px 35px -10px rgba(99, 102, 241, 0.25), 0 0 20px 0 rgba(6, 182, 212, 0.15);
+    }
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css  " rel="stylesheet" crossorigin="anonymous">
+    .badge-glow {
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-primary {
+      background: linear-gradient(135deg, #60a5fa 0%, #818cf8 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .text-gradient-cyan {
+      background: linear-gradient(135deg, #22d3ee 0%, #38bdf8 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Cyber grid lines */
+    .cyber-grid {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070a13;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e2942;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4f46e5;
+    }
+  </style>
 </head>
-<body>
-  <h1>prolin99 website</h1>
 
-    <a href="https://stud.syps.tn.edu.tw/modules/tad_book3/index.php?op=list_docs&tbsn=41" target="_blank" class="btn btn-outline-primary">scratch</a>
+<body class="bg-dark-900 text-slate-100 font-sans min-h-screen relative overflow-x-hidden selection:bg-brand-500 selection:text-white">
 
-    <h2>javascript 學習影片</h2>
-    <a href="https://www.youtube.com/watch?v=0FLkwZ-PH2I&list=PL7enJ2-v6SPkJxL_qO4bBYGR-QViDFxGf" target="_blank" >JavaScript 快速上手</a>
+  <!-- Canvas Background for dynamic network particles -->
+  <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+  
+  <!-- Subtle ambient glow spheres in background -->
+  <div class="fixed top-10 left-1/4 w-96 h-96 bg-brand-600/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow"></div>
+  <div class="fixed bottom-10 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" style="animation-delay: 2s;"></div>
+
+  <!-- Main Wrapper -->
+  <div class="relative z-10 flex flex-col min-h-screen">
+    
+    <!-- Top Navigation -->
+    <header class="sticky top-0 z-50 glass-nav">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        
+        <!-- Logo -->
+        <a href="./" class="flex items-center gap-3 group">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-cyan-400 p-[2px] shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition-all duration-300">
+            <div class="w-full h-full bg-dark-800 rounded-[10px] flex items-center justify-center">
+              <i class="fa-solid fa-bolt-lightning text-cyan-400 text-lg group-hover:scale-110 transition-transform"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xl font-bold tracking-tight text-white group-hover:text-cyan-400 transition-colors">Prolin99</span>
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 font-mono">prolin99.github.io</p>
+          </div>
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+          <a href="#featured" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition">
+            <i class="fa-solid fa-rocket mr-1.5 text-cyan-400"></i>核心專案
+          </a>
+          <a href="#directories" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition">
+            <i class="fa-solid fa-folder-tree mr-1.5 text-brand-400"></i>子目錄索引
+          </a>
+          <a href="#downloads" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition">
+            <i class="fa-solid fa-box-archive mr-1.5 text-emerald-400"></i>檔案下載庫
+          </a>
+          <a href="#resources" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition">
+            <i class="fa-solid fa-graduation-cap mr-1.5 text-amber-400"></i>學習資源
+          </a>
+        </nav>
+
+        <!-- Right Action Button -->
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/prolin99" target="_blank" rel="noopener noreferrer" 
+             class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 hover:border-brand-500/50 transition duration-200 group">
+            <i class="fa-brands fa-github text-base text-slate-300 group-hover:text-white"></i>
+            <span class="hidden sm:inline">GitHub 頁面</span>
+          </a>
+          
+          <!-- Mobile Menu Toggle Button -->
+          <button id="mobileMenuBtn" aria-label="Toggle Menu" class="md:hidden p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Mobile Dropdown -->
+      <div id="mobileMenu" class="hidden md:hidden border-t border-white/10 px-4 pt-3 pb-4 space-y-2 bg-dark-800/95 backdrop-blur-xl">
+        <a href="#featured" class="mobile-link block px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5">
+          <i class="fa-solid fa-rocket mr-2 text-cyan-400"></i>核心專案
+        </a>
+        <a href="#directories" class="mobile-link block px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5">
+          <i class="fa-solid fa-folder-tree mr-2 text-brand-400"></i>子目錄索引
+        </a>
+        <a href="#downloads" class="mobile-link block px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5">
+          <i class="fa-solid fa-box-archive mr-2 text-emerald-400"></i>檔案下載庫
+        </a>
+        <a href="#resources" class="mobile-link block px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5">
+          <i class="fa-solid fa-graduation-cap mr-2 text-amber-400"></i>學習資源
+        </a>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-12 pb-20 md:pt-20 md:pb-28 cyber-grid">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="max-w-3xl mx-auto text-center space-y-8">
+          
+          <!-- Pill Badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-semibold badge-glow animate-float">
+            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span>GITHUB PAGES PERSONAL PORTAL</span>
+            <span class="text-slate-500">|</span>
+            <span class="text-slate-300">prolin99.github.io</span>
+          </div>
+
+          <!-- Main Title -->
+          <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight">
+            <span class="text-gradient">數位工具與實用專案</span>
+            <br>
+            <span class="text-gradient-cyan">快速導航中心</span>
+          </h1>
+
+          <!-- Description -->
+          <p class="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+            收錄 <span class="text-cyan-400 font-medium">政府採購法測驗題庫</span>、
+            <span class="text-brand-400 font-medium">注音符號指法練習</span>、
+            <span class="text-indigo-400 font-medium">英打練習</span>、以及各類軟體與 Scratch 學習資源。
+            隨時隨地，即開即用！
+          </p>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>  
-  </body>
+
+          <!-- Quick Actions -->
+          <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <a href="#featured" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-cyan-500 hover:from-brand-500 hover:to-cyan-400 text-white font-semibold text-sm shadow-lg shadow-brand-500/25 hover:shadow-cyan-500/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+              <i class="fa-solid fa-compass"></i>
+              <span>探索精選專案</span>
+            </a>
+            <a href="#downloads" class="px-6 py-3.5 rounded-xl bg-dark-700/90 hover:bg-dark-600 text-slate-200 border border-white/10 hover:border-slate-400 font-semibold text-sm transition transform hover:-translate-y-0.5 flex items-center gap-2">
+              <i class="fa-solid fa-download text-emerald-400"></i>
+              <span>前往檔案倉庫</span>
+            </a>
+          </div>
+
+
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 1: Featured Sub-projects (核心精選專案) -->
+    <section id="featured" class="py-16 bg-dark-800/40 border-y border-white/5 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div>
+            <div class="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold tracking-wider uppercase">
+              <i class="fa-solid fa-star"></i>
+              <span>Featured Subdirectories</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">核心子目錄專案</h2>
+            <p class="text-slate-400 text-sm mt-1">點選卡片即可快速跳轉至對應子目錄功能頁面</p>
+          </div>
+
+          <!-- Filter Pills -->
+          <div class="flex flex-wrap gap-2 text-xs" id="categoryFilters">
+            <button class="filter-btn active px-3.5 py-1.5 rounded-lg bg-brand-500 text-white font-medium transition" data-filter="all">全部項目</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-medium transition" data-filter="exam">採購測驗</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-medium transition" data-filter="typing">指法練習</button>
+            <button class="filter-btn px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-medium transition" data-filter="tool">工具與其他</button>
+          </div>
+        </div>
+
+        <!-- Project Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projectsContainer">
+          
+          <!-- Card 1: 政府採購法測驗系統 -->
+          <div class="project-item glass-card rounded-2xl p-6 flex flex-col justify-between group" data-category="exam" data-keywords="政府採購法 採購 測驗 題庫 exam 試題 法律">
+            <div>
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    /exam/
+                  </span>
+                  <span class="text-[10px] text-emerald-400 font-mono"><i class="fa-solid fa-circle text-[8px] mr-1"></i>題庫系統</span>
+                </div>
+              </div>
+
+              <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition-colors flex items-center gap-2">
+                政府採購法測驗系統
+              </h3>
+              
+              <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                政府採購法全方位模擬試題系統。包含題庫章節分類、自訂測驗題數、歷次成績紀錄與錯題強化複習機制。
+              </p>
+
+              <div class="flex flex-wrap gap-1.5 mt-4">
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">歷次測驗歷史</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">錯題強化卡</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">即時評分</span>
+              </div>
+            </div>
+
+            <div class="pt-6 mt-6 border-t border-white/5 flex items-center justify-between gap-2">
+              <a href="./exam/" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-dark-900 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 transition">
+                <span>進入主測驗系統</span>
+                <i class="fa-solid fa-arrow-right text-[11px]"></i>
+              </a>
+              <a href="./exam/exam.html" title="備用簡易版測驗" class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs border border-white/10 transition" target="_blank">
+                <i class="fa-solid fa-external-link-alt mr-1"></i>備用頁
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 2: 注音符號鍵盤指法練習 -->
+          <div class="project-item glass-card rounded-2xl p-6 flex flex-col justify-between group" data-category="typing" data-keywords="注音 鍵盤 指法 練習 打字 pbm 繁體中文 ㄅㄆㄇ">
+            <div>
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-keyboard"></i>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                    /pbm/
+                  </span>
+                  <span class="text-[10px] text-cyan-400 font-mono"><i class="fa-solid fa-circle text-[8px] mr-1"></i>互動練習</span>
+                </div>
+              </div>
+
+              <h3 class="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors flex items-center gap-2">
+                注音符號指法練習
+              </h3>
+              
+              <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                專為繁體中文設計的注音鍵盤指法訓練。具備色彩分區對應手指引導、虛擬鍵盤回饋，輕鬆掌握盲打手感。
+              </p>
+
+              <div class="flex flex-wrap gap-1.5 mt-4">
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">彩色指法引導</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">注音符號</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">教學推薦</span>
+              </div>
+            </div>
+
+            <div class="pt-6 mt-6 border-t border-white/5">
+              <a href="./pbm/" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-cyan-500/20 transition">
+                <span>開啟注音練習器</span>
+                <i class="fa-solid fa-arrow-right text-[11px]"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 3: 英文鍵盤打字練習 -->
+          <div class="project-item glass-card rounded-2xl p-6 flex flex-col justify-between group" data-category="typing" data-keywords="英打 英文 打字 鍵盤 指法 abcType typing qwert">
+            <div>
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-2xl group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-font"></i>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    /abcType/
+                  </span>
+                  <span class="text-[10px] text-indigo-400 font-mono"><i class="fa-solid fa-circle text-[8px] mr-1"></i>速度訓練</span>
+                </div>
+              </div>
+
+              <h3 class="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                英文鍵盤打字訓練
+              </h3>
+              
+              <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                英文字母標準指法練習系統，動態顯示按鍵手指提示、打字精準度與速度回饋，適合各年齡層打字入門。
+              </p>
+
+              <div class="flex flex-wrap gap-1.5 mt-4">
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">標準指法</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">字母盲打</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">練習模式</span>
+              </div>
+            </div>
+
+            <div class="pt-6 mt-6 border-t border-white/5">
+              <a href="./abcType/" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-indigo-500/20 transition">
+                <span>開啟英打練習器</span>
+                <i class="fa-solid fa-arrow-right text-[11px]"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 4: 檔案下載庫 -->
+          <div class="project-item glass-card rounded-2xl p-6 flex flex-col justify-between group" data-category="tool" data-keywords="檔案 下載 upload 工具 軟體 library 迷宮 scratch font 條碼 字型">
+            <div>
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-box-open"></i>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    /upload/
+                  </span>
+                  <span class="text-[10px] text-emerald-400 font-mono"><i class="fa-solid fa-circle text-[8px] mr-1"></i>檔案倉庫</span>
+                </div>
+              </div>
+
+              <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center gap-2">
+                檔案與資源下載中心
+              </h3>
+              
+              <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                收集 Scratch 迷宮遊戲原始專案、圖書管理系統安裝套件、3 of 9 條碼字型、VB 執行庫及系統組件。
+              </p>
+
+              <div class="flex flex-wrap gap-1.5 mt-4">
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">Scratch .sb3</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">Barcode 字型</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">系統安裝工具</span>
+              </div>
+            </div>
+
+            <div class="pt-6 mt-6 border-t border-white/5">
+              <a href="#downloads" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition">
+                <span>檢視檔案列表 (10 個檔案)</span>
+                <i class="fa-solid fa-arrow-down text-[11px]"></i>
+              </a>
+            </div>
+          </div>
+
+
+
+          <!-- Card 6: 外部教學資源整合 -->
+          <div class="project-item glass-card rounded-2xl p-6 flex flex-col justify-between group" data-category="tool" data-keywords="scratch 教學 影片 javascript youtube 程式學習">
+            <div>
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-rose-500/20 to-pink-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400 text-2xl group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-lightbulb"></i>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                    精選教學
+                  </span>
+                  <span class="text-[10px] text-rose-400 font-mono"><i class="fa-solid fa-circle text-[8px] mr-1"></i>影片與講義</span>
+                </div>
+              </div>
+
+              <h3 class="text-xl font-bold text-white group-hover:text-rose-400 transition-colors flex items-center gap-2">
+                程式設計教學與影片
+              </h3>
+              
+              <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                涵蓋 Scratch 程式教材完整章節，以及 YouTube 精選 JavaScript 快速上手教學系列清單。
+              </p>
+
+              <div class="flex flex-wrap gap-1.5 mt-4">
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">Scratch 教材</span>
+                <span class="px-2 py-0.5 rounded text-xs bg-white/5 text-slate-300 font-mono">JavaScript 影音</span>
+              </div>
+            </div>
+
+            <div class="pt-6 mt-6 border-t border-white/5">
+              <a href="#resources" class="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 border border-white/10 transition">
+                <span>瀏覽教學連結</span>
+                <i class="fa-solid fa-arrow-down text-[11px]"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 2: Directory Overview (全站子目錄完整樹狀索引) -->
+    <section id="directories" class="py-16 cyber-grid">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 font-mono text-xs font-semibold mb-2">
+            <i class="fa-solid fa-folder-tree"></i>
+            <span>SITE DIRECTORY HIERARCHY</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">網站全目錄快速入口</h2>
+          <p class="text-slate-400 text-sm mt-2">清楚明瞭的目錄結構，一鍵直達指定子網頁與檔案</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 sm:p-8">
+          <div class="font-mono text-sm text-slate-300 space-y-4">
+            
+            <!-- Root -->
+            <div class="flex items-center gap-2 text-cyan-400 font-bold border-b border-white/10 pb-3">
+              <i class="fa-solid fa-house"></i>
+              <span>prolin99.github.io / (根目錄)</span>
+            </div>
+
+            <!-- Branch Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+              
+              <!-- /exam/ -->
+              <div class="p-4 rounded-xl bg-dark-700/60 border border-white/5 hover:border-amber-400/40 transition">
+                <div class="flex items-center justify-between text-amber-400 font-semibold mb-2">
+                  <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-folder"></i>
+                    <span>/exam/</span>
+                  </span>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-400/10">測驗</span>
+                </div>
+                <p class="text-xs text-slate-400 mb-3">政府採購法題庫測驗與錯題分析</p>
+                <div class="space-y-1.5 text-xs">
+                  <a href="./exam/index.html" class="flex items-center justify-between p-1.5 rounded hover:bg-white/5 text-slate-200 hover:text-cyan-400 transition">
+                    <span>📄 index.html</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                  </a>
+
+                </div>
+              </div>
+
+              <!-- /pbm/ -->
+              <div class="p-4 rounded-xl bg-dark-700/60 border border-white/5 hover:border-cyan-400/40 transition">
+                <div class="flex items-center justify-between text-cyan-400 font-semibold mb-2">
+                  <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-folder"></i>
+                    <span>/pbm/</span>
+                  </span>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-400/10">注音</span>
+                </div>
+                <p class="text-xs text-slate-400 mb-3">注音符號彩色鍵盤指法對照練習</p>
+                <div class="space-y-1.5 text-xs">
+                  <a href="./pbm/index.html" class="flex items-center justify-between p-1.5 rounded hover:bg-white/5 text-slate-200 hover:text-cyan-400 transition">
+                    <span>📄 index.html</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- /abcType/ -->
+              <div class="p-4 rounded-xl bg-dark-700/60 border border-white/5 hover:border-indigo-400/40 transition">
+                <div class="flex items-center justify-between text-indigo-400 font-semibold mb-2">
+                  <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-folder"></i>
+                    <span>/abcType/</span>
+                  </span>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-400/10">英打</span>
+                </div>
+                <p class="text-xs text-slate-400 mb-3">英文盲打指法練習與速度測驗</p>
+                <div class="space-y-1.5 text-xs">
+                  <a href="./abcType/index.html" class="flex items-center justify-between p-1.5 rounded hover:bg-white/5 text-slate-200 hover:text-cyan-400 transition">
+                    <span>📄 index.html</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- /upload/ -->
+              <div class="p-4 rounded-xl bg-dark-700/60 border border-white/5 hover:border-emerald-400/40 transition">
+                <div class="flex items-center justify-between text-emerald-400 font-semibold mb-2">
+                  <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-folder"></i>
+                    <span>/upload/</span>
+                  </span>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-400/10">檔案庫</span>
+                </div>
+                <p class="text-xs text-slate-400 mb-3">包含 Scratch 專案、字型與工具軟體</p>
+                <div class="space-y-1.5 text-xs">
+                  <a href="#downloads" class="flex items-center justify-between p-1.5 rounded hover:bg-white/5 text-slate-200 hover:text-emerald-400 transition">
+                    <span>📦 瀏覽 10+ 個檔案</span>
+                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 3: Download Center (檔案下載專區 - upload 子目錄) -->
+    <section id="downloads" class="py-16 bg-dark-800/60 border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+          <div>
+            <div class="flex items-center gap-2 text-emerald-400 text-xs font-mono font-semibold tracking-wider uppercase">
+              <i class="fa-solid fa-download"></i>
+              <span>Downloads Repository (/upload/)</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">實用檔案與軟體下載庫</h2>
+            <p class="text-slate-400 text-sm mt-1">位於 <code class="text-emerald-400 font-mono">/upload/</code> 目錄，點擊即可高速下載</p>
+          </div>
+
+          <!-- File filter search -->
+          <div class="w-full md:w-72">
+            <div class="relative">
+              <i class="fa-solid fa-filter absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+              <input type="text" id="fileFilterInput" placeholder="篩選檔案名稱..." 
+                     class="w-full pl-9 pr-4 py-2 rounded-xl bg-dark-700 border border-white/10 text-xs text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-400">
+            </div>
+          </div>
+        </div>
+
+        <!-- File Table / Grid -->
+        <div class="glass-card rounded-2xl overflow-hidden border border-white/10">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="text-xs text-slate-400 uppercase bg-white/[0.04] border-b border-white/5 font-mono">
+                <tr>
+                  <th scope="col" class="py-4 px-6">檔案名稱與類型</th>
+                  <th scope="col" class="py-4 px-6 hidden sm:table-cell">用途描述</th>
+                  <th scope="col" class="py-4 px-6">檔案大小</th>
+                  <th scope="col" class="py-4 px-6 text-right">動作</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5 font-mono text-xs" id="fileTableBody">
+                
+                <!-- 迷宮.sb3 -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="迷宮.sb3 scratch 遊戲">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-puzzle-piece"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">迷宮.sb3</div>
+                      <div class="text-[10px] text-amber-400/90 font-sans">Scratch 3.0 專案檔案</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    Scratch 程式設計迷宮遊戲完整作品檔，可匯入 Scratch 官網或離線版編輯
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">88.1 KB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/迷宮.sb3" download="迷宮.sb3" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- FRE3OF9X.TTF -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="FRE3OF9X.TTF 條碼 字型 barcode font code39">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-barcode"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">FRE3OF9X.TTF</div>
+                      <div class="text-[10px] text-indigo-400/90 font-sans">TrueType 條碼字型</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    Free 3 of 9 延伸標準條碼字型 (Code 39)，支援圖書標籤與條碼列印
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">7.2 KB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/FRE3OF9X.TTF" download="FRE3OF9X.TTF" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- Library2.exe -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="Library2.exe 圖書 管理 系統 主程式">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-book-bookmark"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">Library2.exe</div>
+                      <div class="text-[10px] text-cyan-400/90 font-sans">Windows 執行檔</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    簡易圖書管理系統主安裝與執行程式，需要安裝 BDEInfoSetup.exe 。
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">1.37 MB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/Library2.exe" download="Library2.exe" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- library2913.zip -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="library2913.zip 圖書 管理 壓縮包 更新">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-file-zipper"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">library2913.zip</div>
+                      <div class="text-[10px] text-cyan-400/90 font-sans">ZIP 壓縮套件</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    圖書管理系統版本資源與更新組件包
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">679.5 KB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/library2913.zip" download="library2913.zip" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- BDEInfoSetup.exe -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="BDEInfoSetup.exe bde borland 資料庫 設定">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-database"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">BDEInfoSetup.exe</div>
+                      <div class="text-[10px] text-purple-400/90 font-sans">系統資料庫組件</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    Borland Database Engine (BDE) 系統設定與安裝程式
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">6.73 MB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/BDEInfoSetup.exe" download="BDEInfoSetup.exe" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- msvbvm50.exe -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="msvbvm50.exe visual basic 執行庫 vb5 runtime">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-gear"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">msvbvm50.exe</div>
+                      <div class="text-[10px] text-blue-400/90 font-sans">VB5 Runtime 執行庫</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    Microsoft Visual Basic 5.0 虛擬機器執行庫安裝檔
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">969.5 KB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/msvbvm50.exe" download="msvbvm50.exe" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- ocx.zip -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="ocx.zip activex 控制項 系統元件">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-cubes"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">ocx.zip</div>
+                      <div class="text-[10px] text-blue-400/90 font-sans">ActiveX 控制項包</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    系統必備 OCX 控制項整合壓縮包
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">503.8 KB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/ocx.zip" download="ocx.zip" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- wscore4.exe -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="wscore4.exe winsock 網路 套件">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">wscore4.exe</div>
+                      <div class="text-[10px] text-teal-400/90 font-sans">Windows 執行檔</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    winscore 國小成績處理系統安裝版。
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">1.54 MB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/wscore4.exe" download="wscore4.exe" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- wsc455.zip -->
+                <tr class="file-row hover:bg-white/[0.03] transition" data-name="wsc455.zip wsc 通訊 庫">
+                  <td class="py-4 px-6 font-medium text-white flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center shrink-0 text-base">
+                      <i class="fa-solid fa-file-zipper"></i>
+                    </div>
+                    <div>
+                      <div class="font-bold text-slate-100">wsc455.zip</div>
+                      <div class="text-[10px] text-teal-400/90 font-sans">ZIP 壓縮套件</div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-6 text-slate-400 font-sans hidden sm:table-cell">
+                    winscore 國小成績處理系統更新檔。
+                  </td>
+                  <td class="py-4 px-6 text-slate-400">260.5 KB</td>
+                  <td class="py-4 px-6 text-right">
+                    <a href="./upload/wsc455.zip" download="wsc455.zip" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-dark-900 font-bold transition">
+                      <i class="fa-solid fa-download"></i>
+                      <span>下載</span>
+                    </a>
+                  </td>
+                </tr>
+
+
+
+              </tbody>
+            </table>
+          </div>
+          <div id="noFileFound" class="hidden py-8 text-center text-slate-400 text-sm">
+            找不到符合關鍵字的檔案。
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 4: External Learning & Tutorials (外部學習教材) -->
+    <section id="resources" class="py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-amber-500/10 text-amber-400 font-mono text-xs font-semibold mb-2">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>LEARNING RESOURCES</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">教學教材與精選影片</h2>
+          <p class="text-slate-400 text-sm mt-2">適合初學者與程式自學者的優質延伸學習連結</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          
+          <!-- Scratch Resource -->
+          <a href="https://stud.syps.tn.edu.tw/modules/tad_book3/index.php?op=list_docs&tbsn=41" target="_blank" rel="noopener noreferrer" 
+             class="glass-card rounded-2xl p-6 group hover:border-amber-400/40 block">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-cat"></i>
+              </div>
+              <span class="text-xs font-mono text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">
+                線上教材 ↗
+              </span>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">
+              Scratch 程式設計教學手冊
+            </h3>
+            <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+              南瀛國小教學網完整 Scratch 學習講義，由淺入深掌握積木程式邏輯、遊戲關卡設計與互動思維。
+            </p>
+            <div class="mt-4 pt-4 border-t border-white/5 flex items-center text-xs text-amber-400 font-semibold gap-1">
+              <span>立即前往閱讀講義</span>
+              <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </a>
+
+          <!-- JavaScript Video Resource -->
+          <a href="https://www.youtube.com/watch?v=0FLkwZ-PH2I&list=PL7enJ2-v6SPkJxL_qO4bBYGR-QViDFxGf" target="_blank" rel="noopener noreferrer" 
+             class="glass-card rounded-2xl p-6 group hover:border-rose-400/40 block">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                <i class="fa-brands fa-youtube"></i>
+              </div>
+              <span class="text-xs font-mono text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-md border border-rose-500/20">
+                影音清單 ↗
+              </span>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-rose-400 transition-colors">
+              JavaScript 快速上手學習影片
+            </h3>
+            <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+              YouTube 精選 JavaScript 影音教學播放清單，快速掌握前端動態網頁核心語法、事件處理與 DOM 操作。
+            </p>
+            <div class="mt-4 pt-4 border-t border-white/5 flex items-center text-xs text-rose-400 font-semibold gap-1">
+              <span>在 YouTube 上觀看播放清單</span>
+              <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-white/10 bg-dark-900/90 py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center text-sm font-bold">
+              P
+            </div>
+            <div>
+              <p class="text-sm font-bold text-white">Prolin99 GitHub Pages</p>
+              <p class="text-xs text-slate-500 font-mono">Hosted on GitHub Pages • Updated 2026</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+            <a href="./exam/" class="hover:text-white transition">採購法測驗</a>
+            <a href="./pbm/" class="hover:text-white transition">注音練習</a>
+            <a href="./abcType/" class="hover:text-white transition">英打練習</a>
+            <a href="#downloads" class="hover:text-white transition">檔案下載</a>
+            <a href="./LIFFtest.html" class="hover:text-white transition">LINE LIFF</a>
+            <a href="./success.html" class="hover:text-white transition">Ping Test</a>
+          </div>
+
+          <div>
+            <button id="backToTopBtn" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-arrow-up"></i>
+              <span>回到頂部</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    // 1. Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // 2. Back to Top Button
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 3. Category Filter Buttons
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectItems = document.querySelectorAll('.project-item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => {
+          b.classList.remove('active', 'bg-brand-500', 'text-white');
+          b.classList.add('bg-white/5', 'text-slate-300');
+        });
+        btn.classList.add('active', 'bg-brand-500', 'text-white');
+        btn.classList.remove('bg-white/5', 'text-slate-300');
+
+        const filter = btn.getAttribute('data-filter');
+        projectItems.forEach(item => {
+          if (filter === 'all' || item.getAttribute('data-category') === filter) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // 4. Global Search Filter (Hero input)
+    const projectSearch = document.getElementById('projectSearch');
+    const clearSearch = document.getElementById('clearSearch');
+
+    projectSearch.addEventListener('input', (e) => {
+      const term = e.target.value.trim().toLowerCase();
+      if (term) {
+        clearSearch.classList.remove('hidden');
+      } else {
+        clearSearch.classList.add('hidden');
+      }
+
+      projectItems.forEach(item => {
+        const keywords = (item.getAttribute('data-keywords') || '').toLowerCase();
+        const text = item.innerText.toLowerCase();
+        if (keywords.includes(term) || text.includes(term)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+
+    clearSearch.addEventListener('click', () => {
+      projectSearch.value = '';
+      clearSearch.classList.add('hidden');
+      projectItems.forEach(item => item.style.display = 'flex');
+      projectSearch.focus();
+    });
+
+    // 5. Download Center File Table Filter
+    const fileFilterInput = document.getElementById('fileFilterInput');
+    const fileRows = document.querySelectorAll('.file-row');
+    const noFileFound = document.getElementById('noFileFound');
+
+    fileFilterInput.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      let matchCount = 0;
+      fileRows.forEach(row => {
+        const nameData = row.getAttribute('data-name').toLowerCase();
+        const text = row.innerText.toLowerCase();
+        if (nameData.includes(q) || text.includes(q)) {
+          row.style.display = '';
+          matchCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      if (matchCount === 0) {
+        noFileFound.classList.remove('hidden');
+      } else {
+        noFileFound.classList.add('hidden');
+      }
+    });
+
+    // 6. Interactive Particle Canvas Background
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.45;
+        this.radius = Math.random() * 1.5 + 0.8;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(99, 102, 241, 0.5)';
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const count = Math.min(Math.floor(width / 20), 60);
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function renderParticles() {
+      ctx.clearRect(0, 0, width, height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 110) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(6, 182, 212, ${0.15 * (1 - dist / 110)})`;
+            ctx.lineWidth = 0.75;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(renderParticles);
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initParticles();
+    });
+
+    resizeCanvas();
+    initParticles();
+    renderParticles();
+  </script>
+</body>
 </html>
